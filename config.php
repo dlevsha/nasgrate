@@ -2,8 +2,7 @@
 
 define('DATABASE_DRIVER', 'mysql');
 define('DATABASE_HOST', 'localhost');
-define('DATABASE_NAME', 'u19808');
-define('DATABASE_CHARSET', 'cp1251');
+define('DATABASE_NAME', 'test');
 define('DATABASE_USER', 'root');
 define('DATABASE_PASSWORD', '');
 
