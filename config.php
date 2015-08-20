@@ -1,13 +1,17 @@
 <?php
 
+// Change your database settings
 define('DATABASE_DRIVER', 'mysql');
 define('DATABASE_HOST', 'localhost');
-define('DATABASE_NAME', 'test');
+define('DATABASE_NAME', 'test2');
 define('DATABASE_USER', 'root');
 define('DATABASE_PASSWORD', '');
+// \-------------------------------
+
+
 
 // MySQL sample config
-define('DATABASE_DSN',  'mysql:host='.DATABASE_HOST.';dbname='.DATABASE_NAME);
+define('DATABASE_DSN',  DATABASE_DRIVER.':host='.DATABASE_HOST.';dbname='.DATABASE_NAME);
 
 define('VERSION_TABLE_NAME', '__migrationVersions');
 

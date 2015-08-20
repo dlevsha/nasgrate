@@ -311,7 +311,7 @@ class Migration
     public function getHelp()
     {
 
-        return 'Nasgrate lets you organise database schema migration process in a consistent and easy way.
+        return 'Nasgrate is a console utility lets you organise database schema migration process in a consistent and easy way.
 It support mysql, mssql, postgresql, oracle (you can find informaton here http://php.net/manual/en/pdo.drivers.php)
 
 Usage:
