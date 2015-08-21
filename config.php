@@ -3,7 +3,7 @@
 // Change your database settings
 define('DATABASE_DRIVER', 'mysql');
 define('DATABASE_HOST', 'localhost');
-define('DATABASE_NAME', 'test2');
+define('DATABASE_NAME', 'test');
 define('DATABASE_USER', 'root');
 define('DATABASE_PASSWORD', '');
 // \-------------------------------

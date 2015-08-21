@@ -52,7 +52,7 @@ You need to view help page described base commands
 	It support mysql, mssql, postgresql, oracle (you can find informaton here http://php.net/manual/en/pdo.drivers.php)
 	
 	Usage:
-	  php console.php [command] [options]
+	  php nasgrate [command] [options]
 	
 	Command:
 	  status     - display migration status
@@ -99,23 +99,105 @@ Lets check your database connection settings
 	
 If all ok you see
 
-	--------------------------------------------------
-	
 	Last Migration ID:  no migrations
-	
 	Available Migrations: No actual migrations
 	
-	--------------------------------------------------	
-If you have connection problem you see error description. For example:
+If you have connection problem you'll see error description. For example:
 
-	--------------------------------------------------
-	
 	DATABASE ERROR :: SQLSTATE[HY000] [1049] Unknown database 'test2'
-	
-	--------------------------------------------------
 
 	
 
 Documentation
 -------------
 
+### Create migration
+
+Every time than you create migration - you create `.php` file having at least two methods: `up()` and `down()`.
+
+`up()` method contain SQL-queries using to update exist database schema. For example:
+
+	CREATE TABLE test (
+	  id int(11) unsigned NOT NULL AUTO_INCREMENT,
+	  PRIMARY KEY (id)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	
+`down()` method conatain SQL-queries	using to revert database schema. For example:
+
+	DROP TABLE test
+	
+Let's	create our first migration
+
+	_$ php nasgrate generate
+	
+display 
+	
+	Generate new migration ID: 20150821112753
+	Please edit file: /migrations/Migration20150821112753.php
+	
+By default migration file stored in `/migrations` directory. You can change this location in `config.php` file in `DIR_MIGRATION` constant. 
+
+If you look closely - you'll see that migration ID is a timestamp:
+
+`20150821112753` -> `2015-08-21 11:27:53`
+
+If you want you can change migration file prefix in `config.php` in `FILE_PREFIX` constant.
+
+Created file contain three methods
+
+	<?php
+	// Please edit this file
+	class Migration20150821112753 extends Migration_Abstract
+	{
+	    public function up()
+	    {
+	        // please add UP SQL query here
+	        // $this->_addSql('');
+	    }
+	
+	    public function down()
+	    {
+	        // please add DOWN SQL query here
+	        // $this->_addSql('');
+	    }
+	
+	    public function getDescription()
+	    {
+	        return 'Created by dlevsha, 2015-08-21 11:27:53';
+	    }
+	}
+	
+`getDescription()` contain migration description. You can change or expand it. 
+
+	    public function getDescription()
+	    {
+	        return "The first migration. Created by dlevsha, 2015-08-21 11:27:53";
+	    } 	
+	    
+Add sql to `up()` and `down()` methods.	 
+
+   	<?php
+	// Please edit this file
+	class Migration20150821112753 extends Migration_Abstract
+	{
+	    public function up()
+	    {
+	        // please add UP SQL query here
+	        
+	        $this->_addSql('CREATE TABLE test (
+				  id int(11) unsigned NOT NULL AUTO_INCREMENT,
+				  PRIMARY KEY (id)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8');
+	    }
+	
+	    public function down()
+	    {
+	        // please add DOWN SQL query here
+	        $this->_addSql('DROP TABLE test');
+	    }
+	
+	    public function getDescription()
+	    {
+	        return 'The first migration. Created by dlevsha, 2015-08-21 11:27:53';
+	    }
+	}

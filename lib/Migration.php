@@ -149,7 +149,7 @@ class Migration
     public function status()
     {
         Console::getInstance()->line();
-        Console::getInstance()->write('Last Migration ID: '.($this->getLastMigrationId()?$this->getLastMigrationId():' no migrations')."\n");
+        Console::getInstance()->write('Last Migration ID: '.($this->getLastMigrationId()?$this->getLastMigrationId():' no migrations'));
 
         if($this->_getActualMigrations()){
             Console::getInstance()->write('Available Migrations:');
@@ -315,7 +315,7 @@ class Migration
 It support mysql, mssql, postgresql, oracle (you can find informaton here http://php.net/manual/en/pdo.drivers.php)
 
 Usage:
-  php console.php [command] [options]
+  php nasgrate [command] [options]
 
 Command:
   status     - display migration status
