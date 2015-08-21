@@ -201,3 +201,188 @@ Add sql to `up()` and `down()` methods.
 	        return 'The first migration. Created by dlevsha, 2015-08-21 11:27:53';
 	    }
 	}
+	
+You can add as many sql as you want. Each sql query need to be in separate `_addSql()` method. Each update sql in `up()` method need to have mirrow sql in `down()` method.	
+
+	    public function up()
+	    {
+	        // please add UP SQL query here
+	        
+	        $this->_addSql('CREATE TABLE test (
+				  id int(11) unsigned NOT NULL AUTO_INCREMENT,
+				  PRIMARY KEY (id)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8');
+	        
+	        $this->_addSql('CREATE TABLE test2 (
+				  id int(11) unsigned NOT NULL AUTO_INCREMENT,
+				  PRIMARY KEY (id)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8');
+	    }
+	
+	    public function down()
+	    {
+	        // please add DOWN SQL query here
+	        $this->_addSql('DROP TABLE test');
+	        $this->_addSql('DROP TABLE test2');
+	    }
+
+	
+### Update database schema (run migration)	
+Before we run our first migation let's view query in our migration
+
+	_$ php nasgrate up:show
+	
+display
+
+	Migration :: 20150821112753
+	Description: The first migration. Created by dlevsha, 2015-08-21 11:27:53
+	
+	CREATE TABLE test (
+	              id int(11) unsigned NOT NULL AUTO_INCREMENT,
+	              PRIMARY KEY (id)
+	            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+	
+	CREATE TABLE test2 (
+	              id int(11) unsigned NOT NULL AUTO_INCREMENT,
+	              PRIMARY KEY (id)
+	            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+We can see each query which executed during migration process. If all ok - let's run migration.
+
+	php nasgrate up:run
+	
+display
+
+	Migration :: 20150821112753
+	
+	CREATE TABLE test (
+	              id int(11) unsigned NOT NULL AUTO_INCREMENT,
+	              PRIMARY KEY (id)
+	            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+	
+	
+	CREATE TABLE test2 (
+	              id int(11) unsigned NOT NULL AUTO_INCREMENT,
+	              PRIMARY KEY (id)
+	            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+	
+	... complete
+
+If you look to your database you see three tables.
+
+	__migrationVersions
+	test
+	test2
+
+`__migrationVersions` - service table cretaed by migration script. It contain executed migration ID. If you want change name of this table edit `VERSION_TABLE_NAME` constant in `config.php`. Never remove this table - you loss you migration information. 
+
+`test` and `test2` - tables, created through migration process.
+
+If you want update databse schema before certain migration you need set this migration ID as argument
+
+	_$ php nasgrate up:run 20150821132420
+
+### Revert database schema
+
+If something going wrong and you want to rollback you changes you need to use revert process. Before you run you need to know migration ID to which you want revert database schema. 
+
+You can display all migration ID in your database runinig
+
+	_$ php nasgrate list
+	
+display
+
+	Migration list:
+	 - 20150821132421 [21.08.2015 13:24:21] - new
+	 - 20150821132420 [21.08.2015 13:24:20] - new
+	 - 20150821132419 [21.08.2015 13:24:19] - new
+	 - 20150821112753 [21.08.2015 13:18:45] - executed	
+You see that you have four migrations in your database. Migration `20150821112753` already executed, three other not.
+
+Let's imagine you want to revert `20150821112753` migration.
+
+	_$ php nasgrate down:show 20150821112753
+	
+display
+
+	Migration :: 20150821112753
+	Description: The first migration. Created by dlevsha, 2015-08-21 11:27:53
+	
+	DROP TABLE test
+	DROP TABLE test2	
+
+Lets run revert process
+
+	_$ php nasgrate down:run 20150821112753
+	
+display
+
+	Migration :: 20150821112753
+	
+	DROP TABLE test
+	DROP TABLE test2
+	
+	... complete	
+
+If you look in your database you see that `test` and `test2` tables was remove.
+
+Run again `list` command
+
+	_$ php nasgrate list
+	
+display
+
+	Migration list:
+	20150821132421 [21.08.2015 13:24:21] - new
+	20150821132420 [21.08.2015 13:24:20] - new
+	20150821132419 [21.08.2015 13:24:19] - new
+	20150821112753 [21.08.2015 11:27:53] - new	
+### Generated migration based on existed database schema (for MySQL database only)
+
+Suppose you already have `test` and `test2` tables in your database and you want to create migration based on this tables.
+
+Run
+
+	_$ php nasgrate generate table:test,test2
+	
+Display 
+
+	Generate new migration ID: 20150821141007
+	Please edit file: /migrations/Migration20150821141007.php
+	This migration marked as executed		
+	
+Than you look inside `Migration20150821141007.php` you see that this file already have `up()` and `down()` method with SQL-queries. 
+
+    public function up()
+    {
+        // please add UP SQL query here
+			$this->_addSql('CREATE TABLE test2 (
+			  id int(11) unsigned NOT NULL AUTO_INCREMENT,
+			  PRIMARY KEY (id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8');
+			
+			$this->_addSql('CREATE TABLE test (
+			  id int(11) unsigned NOT NULL AUTO_INCREMENT,
+			  PRIMARY KEY (id)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8');
+    }
+
+    public function down()
+    {
+        // please add DOWN SQL query here
+			$this->_addSql('DROP TABLE IF EXISTS test2');
+			$this->_addSql('DROP TABLE IF EXISTS test');
+    }
+
+LICENSE
+-------
+
+Copyright (c) 2015, Levsha Dmitry
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.

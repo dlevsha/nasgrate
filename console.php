@@ -32,6 +32,9 @@ switch($_SERVER['argv'][1]){
     case "down:run":
         $migration->down( isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : null );
         break;
+    case "list":
+        $migration->migrationList();
+        break;
     case "help":
         echo $migration->getHelp();
         break;

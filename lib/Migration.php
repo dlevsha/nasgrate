@@ -105,6 +105,7 @@ class Migration
     // ---------------------------
 
 
+    // ---------------------------
     public function up($migrationId = null)
     {
         $content = $this->_getUpSql($migrationId);
@@ -143,7 +144,22 @@ class Migration
         }
         Console::getInstance()->line();
     }
+    // ---------------------------
 
+
+    public function migrationList()
+    {
+        $migrationInBase = $this->_getMigrationIdFromBase();
+        $migrationFromFiles = $this->_getMigrations();
+        Console::getInstance()->line();
+        Console::getInstance()->write(!$migrationFromFiles ? 'No actual migrations' : 'Migration list:');
+        rsort($migrationFromFiles);
+        foreach($migrationFromFiles as $migrationId){
+            preg_match('/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/', $migrationId, $parts);
+            Console::getInstance()->write(' - '.$migrationId.' ['.($parts[3].'.'.$parts[2].'.'.$parts[1].' '.$parts[4].':'.$parts[5].':'.$parts[6]).'] - '.(in_array($migrationId, $migrationInBase) ? 'executed': 'new'));
+        }
+        Console::getInstance()->line();
+    }
 
 
     public function status()
