@@ -25,13 +25,16 @@ class Migration
         return self::$_instance;
     }
 
-    public function generate($commands = null)
+    public function generate($migrationName = null, $commands = null)
     {
+        if(!$migrationName) Console::getInstance()->writeError("Migration name is required.\nUse: _$ php nasgrate generate [migration_name]");
+        if(preg_match('/[^A-z0-9-\.\_]/', $migrationName, $s)) Console::getInstance()->writeError("Migration name contain wrong symbol: [".$s[0].']');
         $time = date('YmdHis');
-        $name = FILE_PREFIX.$time;
+
+        $name = $time.'_'.implode("_", array_map(function($item){ return ucfirst($item); }, preg_split('/[-\_\.]/', $migrationName)));
         $content = str_replace(
             array('MigrationXXXTTXXX', '---<>---'),
-            array($name, DEFAULT_DESCRIPTION_MESSAGE),
+            array(CLASS_PREFIX.$name, DEFAULT_DESCRIPTION_MESSAGE),
             file_get_contents($this->_getTemplatePath())
         );
         if($commands){
@@ -49,14 +52,14 @@ class Migration
                     }
                 }
             }
-            $this->_addVersionId($time);
+            $this->_addVersionId($name);
         }
         $filePath = DIR_MIGRATION.'/'.$name.'.php';
         if(!is_writable(DIR_MIGRATION)) {
             Console::getInstance()->writeError('FILE SYSTEM ERROR :: Migration directory '.DIR_MIGRATION.' is not writable! ');
         }
         file_put_contents($filePath, $content);
-        Console::getInstance()->writeHeader("Generate new migration ID: ".$time."\n".'Please edit file: '.str_replace(DIR_ROOT, '', $filePath).($commands?"\nThis migration marked as executed":''));
+        Console::getInstance()->write("\n\033[33mGenerate new migration ID: ".$time."\033[0m\n".'Please edit file: '.str_replace(DIR_ROOT, '', $filePath).($commands?"\nThis migration marked as executed":'')."\n");
         return $this;
     }
 
@@ -88,19 +91,19 @@ class Migration
 
     private function _showSqlContentShow($content)
     {
-        Console::getInstance()->line();
         if($content){
             foreach($content as $item){
-                Console::getInstance()->write('Migration :: '.$item['migrationId']);
+                $migrationId = 'Migration :: '.$item['migrationId'];
+                Console::getInstance()->write("\n".str_repeat("=", strlen($migrationId)));
+                Console::getInstance()->write("\n".$migrationId);
                 if($item['description']) {
                     Console::getInstance()->write('Description: '.$item['description']);
                 }
-                Console::getInstance()->write("\n".implode("\n\n", $item['sql'])."\n");
+                Console::getInstance()->write("\n\033[33m".implode("\n----\n", $item['sql'])."\033[0m\n");
             }
         }else{
             Console::getInstance()->write('No actual migrations!');
         }
-        Console::getInstance()->line();
     }
     // ---------------------------
 
@@ -120,13 +123,18 @@ class Migration
 
     private function _sqlContentRun($content, $isUp = true)
     {
-        Console::getInstance()->line();
         if($content) {
             foreach ($content as $item) {
-                Console::getInstance()->write('Migration :: '.$item['migrationId']);
+                $migrationId = 'Migration :: '.$item['migrationId'];
+                Console::getInstance()->write("\n".str_repeat("=", strlen($migrationId)));
+                Console::getInstance()->write("\n".$migrationId);
+                if($item['description']) {
+                    Console::getInstance()->write('Description: '.$item['description']);
+                }
+
                 foreach ($item['sql'] as $sqlQuery) {
                     try{
-                        Console::getInstance()->write("\n".$sqlQuery."\n");
+                        Console::getInstance()->write("\n\033[33m".$sqlQuery."\033[0m\n");
                         $this->_getDb()->exec($sqlQuery);
                     }catch(Exception $e){
                         Console::getInstance()->writeError($sqlQuery."\n\nDATABASE ERROR :: ".$e->getMessage());
@@ -142,7 +150,6 @@ class Migration
         }else{
             Console::getInstance()->write('No actual migrations!');
         }
-        Console::getInstance()->line();
     }
     // ---------------------------
 
@@ -151,21 +158,19 @@ class Migration
     {
         $migrationInBase = $this->_getMigrationIdFromBase();
         $migrationFromFiles = $this->_getMigrations();
-        Console::getInstance()->line();
-        Console::getInstance()->write(!$migrationFromFiles ? 'No actual migrations' : 'Migration list:');
+        Console::getInstance()->write( "\n\033[33m".(!$migrationFromFiles ? 'No actual migrations' : 'Migration list:')."\033[0m" );
         rsort($migrationFromFiles);
         foreach($migrationFromFiles as $migrationId){
-            preg_match('/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/', $migrationId, $parts);
-            Console::getInstance()->write(' - '.$migrationId.' ['.($parts[3].'.'.$parts[2].'.'.$parts[1].' '.$parts[4].':'.$parts[5].':'.$parts[6]).'] - '.(in_array($migrationId, $migrationInBase) ? 'executed': 'new'));
+            preg_match('/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/', $migrationId, $parts);
+            Console::getInstance()->write(' - '.'['.($parts[3].'.'.$parts[2].'.'.$parts[1].' '.$parts[4].':'.$parts[5].':'.$parts[6]).'] '."\033[33m".str_replace(".php", "", $migrationId)."\033[0m".' - '.(in_array($migrationId, $migrationInBase) ? 'executed': 'new'));
         }
-        Console::getInstance()->line();
+        Console::getInstance()->write("\n");
     }
 
 
     public function status()
     {
-        Console::getInstance()->line();
-        Console::getInstance()->write('Last Migration ID: '.($this->getLastMigrationId()?$this->getLastMigrationId():' no migrations'));
+        Console::getInstance()->write("\n\033[33mLast Migration ID: ".($this->getLastMigrationId()?$this->getLastMigrationId():' no migrations')."\033[0m\n");
 
         if($this->_getActualMigrations()){
             Console::getInstance()->write('Available Migrations:');
@@ -173,25 +178,28 @@ class Migration
                 Console::getInstance()->write(' + '.$item);
             }
         }else{
-            Console::getInstance()->write('Available Migrations: No actual migrations');
+            Console::getInstance()->write("\n".'Available Migrations: No actual migrations');
         }
-        Console::getInstance()->line();
+        Console::getInstance()->write("\n");
         return $this;
     }
 
-    private function _getUpSql($toMigrationId = null)
+    private function _getUpSql($migrationId = null)
     {
         $out = array();
         $migrations = $this->_getActualMigrations();
-        if($toMigrationId && !in_array($toMigrationId, $migrations)) throw new Exception('Wrong Migration ID: '.$toMigrationId);
+        if($migrationId && !in_array($migrationId, $migrations) && !in_array($migrationId, array_map(function($item){ return substr($item, 0, 14); }, $migrations) )) throw new Exception('Wrong Migration ID: '.$toMigrationId);
 
         foreach($migrations as $migration){
-            if($toMigrationId && $migration > $toMigrationId) continue;
+            preg_match('/^(\d{14})/', $migration, $s);
+            $mid = $s[1];
+            if($migrationId && $mid > $migrationId) continue;
 
-            require_once DIR_MIGRATION.'/'.FILE_PREFIX.$migration.'.php';
-            $className = FILE_PREFIX.$migration;
+            require_once DIR_MIGRATION.'/'.$migration.'.php';
+            $className = CLASS_PREFIX.str_replace(".php", "", $migration);
             $class = new $className;
-            if($class->isSkip() || ($toMigrationId && $migration > $toMigrationId)) continue;
+            if($class->isSkip() || ($migrationId && $mid > $migrationId)) continue;
+            echo $mid .'  --  '. $migrationId ."\n";
             $out[] = array(
                 'migrationId' => $migration,
                 'sql' => $class->getUpSql(),
@@ -204,14 +212,20 @@ class Migration
     private function _getDownSql($migrationId)
     {
         if(!$migrationId) Console::getInstance()->writeError('Need Migration ID');
-        $sql = array();
         $migrations = $this->_getMigrations();
         if(!$migrations) Console::getInstance()->writeError('No actual migrations');
-        if(!in_array($migrationId, $migrations)) Console::getInstance()->writeError('Wrong Migration ID: migration '.$migrationId.' not exist');
+        if(!in_array($migrationId, $migrations) && !in_array($migrationId, array_map(function($item){ return substr($item, 0, 14); }, $migrations) )) Console::getInstance()->writeError('Wrong Migration ID: migration '.$migrationId.' not exist');
 
         $validMigrationId = array();
+        preg_match('/^(\d{14})/', $this->getLastMigrationId(), $s);
+        $lastMigrationId = $s[1];
+        preg_match('/^(\d{14})/', $migrationId, $s);
+        $mid = $s[1];
+
+
         foreach($migrations as $mId){
-            if($mId > $this->getLastMigrationId() || $mId < $migrationId) continue;
+            preg_match('/^(\d{14})/', $mId, $part);
+            if($part[0] > $lastMigrationId || $part[0] < $mid) continue;
             $validMigrationId[] = $mId;
         }
 
@@ -222,8 +236,8 @@ class Migration
 
         $out = array();
         foreach($migrations as $migration){
-            require_once DIR_MIGRATION.'/'.FILE_PREFIX.$migration.'.php';
-            $className = FILE_PREFIX.$migration;
+            require_once DIR_MIGRATION.'/'.$migration.'.php';
+            $className = CLASS_PREFIX.$migration;
             $class = new $className;
             if($class->isSkip()) continue;
             $out[] = array(
@@ -242,8 +256,8 @@ class Migration
             if(!file_exists(DIR_MIGRATION)) Console::getInstance()->writeError('FILE SYSTEM ERROR :: Directory '.DIR_MIGRATION.' doesn\'t exists');
             if(!is_writable(DIR_MIGRATION)) Console::getInstance()->writeError('FILE SYSTEM ERROR :: Directory '.DIR_MIGRATION.' is not writable');
             foreach (new DirectoryIterator(DIR_MIGRATION) as $fileInfo) {
-                if($fileInfo->isDot() || strpos($fileInfo->getFilename(), FILE_PREFIX) !== 0) continue;
-                $this->_migrationFiles[] = str_replace(array(".php", FILE_PREFIX), array("", ""), $fileInfo->getFilename());
+                if($fileInfo->isDot() || !preg_match('/^([\d]{14}).+\.php$/', $fileInfo->getFilename(), $s)) continue;
+                $this->_migrationFiles[] = str_replace(".php", "", $fileInfo->getFilename());
             }
             sort($this->_migrationFiles);
         }
@@ -262,7 +276,7 @@ class Migration
 
     private function _addVersionId($versionId)
     {
-        $versionId = preg_replace('/[^\d]+/', '', $versionId);
+        // $versionId = preg_replace('/[^\d]+/', '', $versionId);
         $stmt = $this->_getDb()->prepare('INSERT INTO '.VERSION_TABLE_NAME.' (version) VALUES(?)');
         $stmt->execute(array($versionId));
         return $this;
@@ -270,7 +284,7 @@ class Migration
 
     private function _removeVersionId($versionId)
     {
-        $versionId = preg_replace('/[^\d]+/', '', $versionId);
+        // $versionId = preg_replace('/[^\d]+/', '', $versionId);
         $stmt = $this->_getDb()->prepare('DELETE FROM '.VERSION_TABLE_NAME.' WHERE version = ?');
         $stmt->execute(array($versionId));
         return $this;
@@ -291,7 +305,7 @@ class Migration
         $stmt = $this->_getDb()->prepare('SHOW TABLES LIKE \''.VERSION_TABLE_NAME.'\'');
         $stmt->execute();
         if(!$stmt->fetch()){
-            $this->_getDb()->exec('CREATE TABLE '.VERSION_TABLE_NAME.' ( version varchar(50) NOT NULL, PRIMARY KEY (version) ) ENGINE=InnoDB DEFAULT CHARSET=utf8');
+            $this->_getDb()->exec('CREATE TABLE '.VERSION_TABLE_NAME.' ( version varchar(255) NOT NULL, PRIMARY KEY (version) ) ENGINE=InnoDB DEFAULT CHARSET=utf8');
         }
 
     }
@@ -327,35 +341,35 @@ class Migration
     public function getHelp()
     {
 
-        return 'Nasgrate is a console utility lets you organise database schema migration process in a consistent and easy way.
+        return "Nasgrate is a console utility lets you organise database schema migration process in a consistent and easy way.
 It support mysql, mssql, postgresql, oracle (you can find informaton here http://php.net/manual/en/pdo.drivers.php)
 
 Usage:
-  php nasgrate [command] [options]
+  \033[33mphp nasgrate [command] [options]\033[0m
 
 Command:
-  status     - display migration status
-  generate   - create new migration (migration file)
-  up:show    - display (but not execute) SQL-query, executed by migration update
-  up:down    - display (but not execute) SQL-query, executed by migration revert
-  up:run     - execute migration update
-  down:run   - execute migration revert
-  help       - show this help
+  \033[33mstatus\033[0m     - display migration status
+  \033[33mgenerate\033[0m   - create new migration (migration file)
+  \033[33mup:show\033[0m    - display (but not execute) SQL-query, executed by migration update
+  \033[33mup:down\033[0m    - display (but not execute) SQL-query, executed by migration revert
+  \033[33mup:run\033[0m     - execute migration update
+  \033[33mdown:run\033[0m   - execute migration revert
+  \033[33mhelp\033[0m       - show this help
 
 Examples:
-  php console.php generate
+  \033[33mphp console.php generate [migration name]\033[0m
   create new migration
 
-  php console.php down:show XXXXXXXXXXX
+  \033[33mphp console.php down:show XXXXXXXXXXX\033[0m
   where XXXXXXXXXXX - id existed migration
 
-  php console.php up:run
+  \033[33mphp console.php up:run\033[0m
   execute all non running migration step by step
 
-  php console.php down:run XXXXXXXXXXX
+  \033[33mphp console.php down:run XXXXXXXXXXX\033[0m
   revert all changes before XXXXXXXXXXX
 
-';
+";
 
     }
 

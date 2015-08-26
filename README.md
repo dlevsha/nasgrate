@@ -128,12 +128,12 @@ Every time than you create migration - you create `.php` file having at least tw
 	
 Let's	create our first migration
 
-	_$ php nasgrate generate
+	_$ php nasgrate generate CreateTestMigration
 	
 display 
 	
-	Generate new migration ID: 20150821112753
-	Please edit file: /migrations/Migration20150821112753.php
+	Generate new migration ID: 20150821112753_CreateTestMigration
+	Please edit file: /migrations/20150821112753_CreateTestMigration.php
 	
 By default migration file stored in `/migrations` directory. You can change this location in `config.php` file in `DIR_MIGRATION` constant. 
 
@@ -141,13 +141,13 @@ If you look closely - you'll see that migration ID is a timestamp:
 
 `20150821112753` -> `2015-08-21 11:27:53`
 
-If you want you can change migration file prefix in `config.php` in `FILE_PREFIX` constant.
+You can change migration class prefix in `config.php` in `CLASS_PREFIX` constant.
 
 Created file contain three methods
 
 	<?php
 	// Please edit this file
-	class Migration20150821112753 extends Migration_Abstract
+	class Migration20150821112753_CreateTestMigration extends Migration_Abstract
 	{
 	    public function up()
 	    {
@@ -178,7 +178,7 @@ Add sql to `up()` and `down()` methods.
 
    	<?php
 	// Please edit this file
-	class Migration20150821112753 extends Migration_Abstract
+	class Migration20150821112753_CreateTestMigration extends Migration_Abstract
 	{
 	    public function up()
 	    {
@@ -234,7 +234,7 @@ Before we run our first migation let's view query in our migration
 	
 display
 
-	Migration :: 20150821112753
+	Migration :: 20150821112753_CreateTestMigration
 	Description: The first migration. Created by dlevsha, 2015-08-21 11:27:53
 	
 	CREATE TABLE test (
@@ -253,7 +253,7 @@ We can see each query which executed during migration process. If all ok - let's
 	
 display
 
-	Migration :: 20150821112753
+	Migration :: 20150821112753_CreateTestMigration
 	
 	CREATE TABLE test (
 	              id int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -293,19 +293,23 @@ You can display all migration ID in your database runinig
 display
 
 	Migration list:
-	 - 20150821132421 [21.08.2015 13:24:21] - new
-	 - 20150821132420 [21.08.2015 13:24:20] - new
-	 - 20150821132419 [21.08.2015 13:24:19] - new
-	 - 20150821112753 [21.08.2015 13:18:45] - executed	
+	 - [26.08.2015 19:39:39] 20150826193939_CreateFirstMigration - new
+	 - [26.08.2015 19:30:33] 20150826193033_New_Table_Test - executed
+	 
 You see that you have four migrations in your database. Migration `20150821112753` already executed, three other not.
 
-Let's imagine you want to revert `20150821112753` migration.
+Let's imagine you want to revert `20150821112753_CreateFirstMigration` migration.
 
 	_$ php nasgrate down:show 20150821112753
 	
+or	
+
+	_$ php nasgrate down:show 20150821112753_CreateFirstMigration
+
+	
 display
 
-	Migration :: 20150821112753
+	Migration :: 20150821112753_CreateFirstMigration
 	Description: The first migration. Created by dlevsha, 2015-08-21 11:27:53
 	
 	DROP TABLE test
@@ -313,11 +317,11 @@ display
 
 Lets run revert process
 
-	_$ php nasgrate down:run 20150821112753
+	_$ php nasgrate down:run 20150821112753_CreateFirstMigration
 	
 display
 
-	Migration :: 20150821112753
+	Migration :: 20150821112753_CreateFirstMigration
 	
 	DROP TABLE test
 	DROP TABLE test2
@@ -333,25 +337,24 @@ Run again `list` command
 display
 
 	Migration list:
-	20150821132421 [21.08.2015 13:24:21] - new
-	20150821132420 [21.08.2015 13:24:20] - new
-	20150821132419 [21.08.2015 13:24:19] - new
-	20150821112753 [21.08.2015 11:27:53] - new	
+	 - [26.08.2015 19:39:39] 20150826193939_CreateFirstMigration - new
+	 - [26.08.2015 19:30:33] 20150826193033_New_Table_Test - new
+	 
 ### Generated migration based on existed database schema (for MySQL database only)
 
 Suppose you already have `test` and `test2` tables in your database and you want to create migration based on this tables.
 
 Run
 
-	_$ php nasgrate generate table:test,test2
+	_$ php nasgrate generate AddTwoDatabases table:test,test2
 	
 Display 
 
-	Generate new migration ID: 20150821141007
-	Please edit file: /migrations/Migration20150821141007.php
+	Generate new migration ID: 20150821141007_AddTwoDatabases
+	Please edit file: /migrations/Migration20150821141007_AddTwoDatabases.php
 	This migration marked as executed		
 	
-Than you look inside `Migration20150821141007.php` you see that this file already have `up()` and `down()` method with SQL-queries. 
+Than you look inside `Migration20150821141007_AddTwoDatabases.php` you see that this file already have `up()` and `down()` method with SQL-queries. 
 
     public function up()
     {

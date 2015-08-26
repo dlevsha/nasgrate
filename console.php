@@ -15,7 +15,8 @@ if(!isset($_SERVER['argv'][1])) {
 
 switch($_SERVER['argv'][1]){
     case "generate":
-        $migration->generate(isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : null);
+
+        $migration->generate($_SERVER['argv'][2], isset($_SERVER['argv'][3]) ? $_SERVER['argv'][3] : null);
         break;
     case "status":
         $migration->status();

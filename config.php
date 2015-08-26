@@ -15,7 +15,7 @@ define('DATABASE_DSN',  DATABASE_DRIVER.':host='.DATABASE_HOST.';dbname='.DATABA
 
 define('VERSION_TABLE_NAME', '__migrationVersions');
 
-define('FILE_PREFIX', 'Migration');
+define('CLASS_PREFIX', 'Migration');
 
 define('DIR_ROOT', dirname(__FILE__));
 define('DIR_MIGRATION', DIR_ROOT.'/migrations');
