@@ -4,13 +4,13 @@ README
 What is Nasgrate?
 -----------------
 
-Nasgrate is a console utility lets you organise database schema migration process in a consistent and easy way.
-It support mysql, mssql, postgresql, oracle and other databases (you can find informaton [here](http://php.net/manual/en/pdo.drivers.php) )
+Nasgrate is a console utility that let you organise database schema migration process at a consistent and easy way.
+It supports mysql, mssql, postgresql, oracle and other databases (you can find informaton [here](http://php.net/manual/en/pdo.drivers.php) )
 
 Requirements
 ------------
 
-Nasgrate is only supported on PHP 5.3.0 and up.
+Nasgrate is only supported by PHP 5.3.0 and up.
 
 Installation
 ------------
@@ -34,34 +34,34 @@ Open config.php file and change your database settings:
 * pgsql - PostgreSQL
 * oci - Oracle 
 
-You can find more information on official [PHP PDO documentation](http://php.net/manual/en/pdo.drivers.php) 
+You can find more information at official [PHP PDO documentation](http://php.net/manual/en/pdo.drivers.php) 
 
-`DATABASE_HOST` - name or IP your database host
+`DATABASE_HOST` - database host name or IP
 
-`DATABASE_NAME` - your database name
+`DATABASE_NAME` - database name
 
 `DATABASE_USER` and `DATABASE_PASSWORD` - login and password to access your database
 
-You can check your settings simply run 
+You can check your settings by simply running 
 
 	_$ php nasgrate
 
-You need to view help page described base commands
+and you are to see the help page describing base commands
 
-	Nasgrate is a console utility lets you organise database schema migration process in a consistent and easy way.
-	It support mysql, mssql, postgresql, oracle (you can find informaton here http://php.net/manual/en/pdo.drivers.php)
+	Nasgrate is a console utility that let you organise database schema migration process at a consistent and easy way.
+	It supports mysql, mssql, postgresql, oracle (you can find informaton here http://php.net/manual/en/pdo.drivers.php)
 	
 	Usage:
 	  php nasgrate [command] [options]
 	
 	Command:
-	  status     - display migration status
-	  generate   - create new migration (migration file)
-	  up:show    - display (but not execute) SQL-query, executed by migration update
-	  up:down    - display (but not execute) SQL-query, executed by migration revert
-	  up:run     - execute migration update
-	  down:run   - execute migration revert
-	  help       - show this help
+	  status     - displays migration status
+	  generate   - creates new migration (migration file)
+	  up:show    - displays (but not executes) SQL-query, executed by migration update
+	  up:down    - displays (but not executes) SQL-query, executed by migration revert
+	  up:run     - executes migration update
+	  down:run   - executes migration revert
+	  help       - shows this help page
 	  ...
 
 If you use Linux or MacOS for your convenience you can setup nasgrate script
@@ -70,16 +70,16 @@ Run
 
 	_$ which php
 	
-You'll see something like 
+You'll see something like this
 
 	_$ which php
 	/usr/local/php5/bin/php	
 
-Copy your php path and add it as a first line in `nasgrate` file like 
+Copy your php path and add it as a first line in `nasgrate` file like here
 
 	#!/usr/local/php5/bin/php -q
 	
-Your file after look like 
+Your file will lool like this 
 
 	#!/usr/local/php5/bin/php -q
 	<?php
@@ -89,7 +89,7 @@ Go to console and run
 
 	_$ chmod +x nasgrate
 	
-Now you can run Nasgrate simply type
+Now you can run Nasgrate by simply typing
 
 	_$ ./nasgrate	
 	
@@ -97,12 +97,12 @@ Lets check your database connection settings
 
 	_$ php nasgrate status
 	
-If all ok you see
+If all is ok you will see
 
 	Last Migration ID:  no migrations
 	Available Migrations: No actual migrations
 	
-If you have connection problem you'll see error description. For example:
+If you have a connection problem you'll see an error description. For example:
 
 	DATABASE ERROR :: SQLSTATE[HY000] [1049] Unknown database 'test2'
 
@@ -113,16 +113,16 @@ Documentation
 
 ### Create migration
 
-Every time than you create migration - you create `.php` file having at least two methods: `up()` and `down()`.
+Every time you create migration - you create `.php` file having at least two methods: `up()` and `down()`.
 
-`up()` method contain SQL-queries using to update exist database schema. For example:
+`up()` method contains SQL-queries that are used to update exist database schema. For example:
 
 	CREATE TABLE test (
 	  id int(11) unsigned NOT NULL AUTO_INCREMENT,
 	  PRIMARY KEY (id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	
-`down()` method conatain SQL-queries	using to revert database schema. For example:
+`down()` method conatains SQL-queries that are used to revert database schema. For example:
 
 	DROP TABLE test
 	
@@ -130,20 +130,20 @@ Let's	create our first migration
 
 	_$ php nasgrate generate CreateTestMigration
 	
-display 
+and it will display 
 	
 	Generate new migration ID: 20150821112753_CreateTestMigration
 	Please edit file: /migrations/20150821112753_CreateTestMigration.php
 	
-By default migration file stored in `/migrations` directory. You can change this location in `config.php` file in `DIR_MIGRATION` constant. 
+By default migration file is stored at `/migrations` directory. You can change this location at `config.php` file at `DIR_MIGRATION` constant. 
 
-If you look closely - you'll see that migration ID is a timestamp:
+If you look closely you'll see that migration ID is a timestamp:
 
 `20150821112753` -> `2015-08-21 11:27:53`
 
-You can change migration class prefix in `config.php` in `CLASS_PREFIX` constant.
+You can change migration class prefix at `config.php` at `CLASS_PREFIX` constant.
 
-Created file contain three methods
+The created file contains three methods
 
 	<?php
 	// Please edit this file
@@ -167,7 +167,7 @@ Created file contain three methods
 	    }
 	}
 	
-`getDescription()` contain migration description. You can change or expand it. 
+`getDescription()` contains migration description. You can change or expand it. 
 
 	    public function getDescription()
 	    {
@@ -202,7 +202,7 @@ Add sql to `up()` and `down()` methods.
 	    }
 	}
 	
-You can add as many sql as you want. Each sql query need to be in separate `_addSql()` method. Each update sql in `up()` method need to have mirrow sql in `down()` method.	
+You can add as many sql queries as you want. Each sql query needs to be at separate `_addSql()` method. Each sql query at `up()` method needs to have mirrow sql query at `down()` method.	
 
 	    public function up()
 	    {
@@ -228,11 +228,11 @@ You can add as many sql as you want. Each sql query need to be in separate `_add
 
 	
 ### Update database schema (run migration)	
-Before we run our first migation let's view query in our migration
+Before we run our first migation let's view query at our migration
 
 	_$ php nasgrate up:show
 	
-display
+and it will display
 
 	Migration :: 20150821112753_CreateTestMigration
 	Description: The first migration. Created by dlevsha, 2015-08-21 11:27:53
@@ -247,11 +247,11 @@ display
 	              PRIMARY KEY (id)
 	            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 
-We can see each query which executed during migration process. If all ok - let's run migration.
+We can see each query which will be executed during migration process. If all is ok let's run migration.
 
 	php nasgrate up:run
 	
-display
+and it will display
 
 	Migration :: 20150821112753_CreateTestMigration
 	
@@ -268,35 +268,35 @@ display
 	
 	... complete
 
-If you look to your database you see three tables.
+If you look at your database you will see three tables.
 
 	__migrationVersions
 	test
 	test2
 
-`__migrationVersions` - service table cretaed by migration script. It contain executed migration ID. If you want change name of this table edit `VERSION_TABLE_NAME` constant in `config.php`. Never remove this table - you loss you migration information. 
+`__migrationVersions` - service table cretaed by migration script. It contains an executed migration ID. If you want to change the name of this table edit `VERSION_TABLE_NAME` constanted at `config.php`. Never remove this table - you will loose you migration information. 
 
-`test` and `test2` - tables, created through migration process.
+`test` and `test2` - tables created through migration process.
 
-If you want update databse schema before certain migration you need set this migration ID as argument
+If you want to update database schema before certain migration you need to set this migration ID as an argument
 
 	_$ php nasgrate up:run 20150821132420
 
 ### Revert database schema
 
-If something going wrong and you want to rollback you changes you need to use revert process. Before you run you need to know migration ID to which you want revert database schema. 
+If something goes wrong and you want to rollback your changes you need to use revert process. Before you run this update you need to know migration ID to which you want to use revert database schema process. 
 
-You can display all migration ID in your database runinig
+You can display all migration ID at your database by runinig
 
 	_$ php nasgrate list
 	
-display
+and it will display
 
 	Migration list:
 	 - [26.08.2015 19:39:39] 20150826193939_CreateFirstMigration - new
 	 - [26.08.2015 19:30:33] 20150826193033_New_Table_Test - executed
 	 
-You see that you have four migrations in your database. Migration `20150821112753` already executed, three other not.
+You see that you have four migrations at your database. Migration `20150821112753` is already executed, three others are not.
 
 Let's imagine you want to revert `20150821112753_CreateFirstMigration` migration.
 
@@ -307,7 +307,7 @@ or
 	_$ php nasgrate down:show 20150821112753_CreateFirstMigration
 
 	
-display
+and it will display
 
 	Migration :: 20150821112753_CreateFirstMigration
 	Description: The first migration. Created by dlevsha, 2015-08-21 11:27:53
@@ -319,7 +319,7 @@ Lets run revert process
 
 	_$ php nasgrate down:run 20150821112753_CreateFirstMigration
 	
-display
+and it will display
 
 	Migration :: 20150821112753_CreateFirstMigration
 	
@@ -328,13 +328,13 @@ display
 	
 	... complete	
 
-If you look in your database you see that `test` and `test2` tables was remove.
+If you look at your database you can see that `test` and `test2` tables were removed.
 
 Run again `list` command
 
 	_$ php nasgrate list
 	
-display
+and it will display
 
 	Migration list:
 	 - [26.08.2015 19:39:39] 20150826193939_CreateFirstMigration - new
@@ -342,19 +342,19 @@ display
 	 
 ### Generated migration based on existed database schema (for MySQL database only)
 
-Suppose you already have `test` and `test2` tables in your database and you want to create migration based on this tables.
+Suppose you already have `test` and `test2` tables at your database and you want to create migration based on these tables.
 
 Run
 
 	_$ php nasgrate generate AddTwoDatabases table:test,test2
 	
-Display 
+and it will display 
 
 	Generate new migration ID: 20150821141007_AddTwoDatabases
 	Please edit file: /migrations/Migration20150821141007_AddTwoDatabases.php
 	This migration marked as executed		
 	
-Than you look inside `Migration20150821141007_AddTwoDatabases.php` you see that this file already have `up()` and `down()` method with SQL-queries. 
+When you look into `Migration20150821141007_AddTwoDatabases.php` you will see that this file already has `up()` and `down()` methods with SQL-queries. 
 
     public function up()
     {
