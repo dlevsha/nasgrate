@@ -356,16 +356,16 @@ Command:
   \033[33mhelp\033[0m       - shows this help page
 
 Examples:
-  \033[33mphp console.php generate [migration name]\033[0m
+  \033[33mphp nasgrate generate [migration name]\033[0m
   create new migration
 
-  \033[33mphp console.php down:show XXXXXXXXXXX\033[0m
+  \033[33mphp nasgrate down:show XXXXXXXXXXX\033[0m
   where XXXXXXXXXXX - id existed migration
 
-  \033[33mphp console.php up:run\033[0m
+  \033[33mphp nasgrate up:run\033[0m
   execute all non running migration step by step
 
-  \033[33mphp console.php down:run XXXXXXXXXXX\033[0m
+  \033[33mphp nasgrate down:run XXXXXXXXXXX\033[0m
   revert all changes before XXXXXXXXXXX
 
 ";
