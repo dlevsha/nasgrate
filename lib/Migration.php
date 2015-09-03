@@ -341,20 +341,19 @@ class Migration
     public function getHelp()
     {
 
-        return "Nasgrate is a console utility lets you organise database schema migration process in a consistent and easy way.
-It support mysql, mssql, postgresql, oracle (you can find informaton here http://php.net/manual/en/pdo.drivers.php)
+        return "Nasgrate is a console utility that let you organise database schema migration process at a consistent and easy way. It supports mysql, mssql, postgresql, oracle and other databases
 
 Usage:
   \033[33mphp nasgrate [command] [options]\033[0m
 
 Command:
-  \033[33mstatus\033[0m     - display migration status
-  \033[33mgenerate\033[0m   - create new migration (migration file)
-  \033[33mup:show\033[0m    - display (but not execute) SQL-query, executed by migration update
+  \033[33mstatus\033[0m     - displays migration status
+  \033[33mgenerate\033[0m   - creates new migration (migration file)
+  \033[33mup:show\033[0m    - displays (but not executes) SQL-query, executed by migration update
   \033[33mup:down\033[0m    - display (but not execute) SQL-query, executed by migration revert
-  \033[33mup:run\033[0m     - execute migration update
-  \033[33mdown:run\033[0m   - execute migration revert
-  \033[33mhelp\033[0m       - show this help
+  \033[33mup:run\033[0m     - executes migration update
+  \033[33mdown:run\033[0m   - executes migration revert
+  \033[33mhelp\033[0m       - shows this help page
 
 Examples:
   \033[33mphp console.php generate [migration name]\033[0m
