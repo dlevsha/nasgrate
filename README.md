@@ -14,8 +14,8 @@ Nasgrate is only supported by PHP 5.3.0 and up.
 
 Installation
 ------------
-	_$ git clone https://github.com/dlevsha/nasgrate.git
-	_$ cd nasgrate
+	$ git clone https://github.com/dlevsha/nasgrate.git
+	$ cd nasgrate
 	
 Open config.php file and change your database settings:
 
@@ -44,7 +44,7 @@ You can find more information at official [PHP PDO documentation](http://php.net
 
 You can check your settings by simply running 
 
-	_$ php nasgrate
+	$ php nasgrate
 
 and you are to see the help page describing base commands
 
@@ -68,11 +68,11 @@ If you use Linux or MacOS for your convenience you can setup nasgrate script
 
 Run 
 
-	_$ which php
+	$ which php
 	
 You'll see something like this
 
-	_$ which php
+	$ which php
 	/usr/local/php5/bin/php	
 
 Copy your php path and add it as a first line in `nasgrate` file like here
@@ -87,15 +87,15 @@ Your file will lool like this
 	
 Go to console and run 
 
-	_$ chmod +x nasgrate
+	$ chmod +x nasgrate
 	
 Now you can run Nasgrate by simply typing
 
-	_$ ./nasgrate	
+	$ ./nasgrate	
 	
 Lets check your database connection settings
 
-	_$ php nasgrate status
+	$ php nasgrate status
 	
 If all is ok you will see
 
@@ -128,7 +128,7 @@ Every time you create migration - you create `.php` file having at least two met
 	
 Let's	create our first migration
 
-	_$ php nasgrate generate CreateTestMigration
+	$ php nasgrate generate CreateTestMigration
 	
 and it will display 
 	
@@ -230,7 +230,7 @@ You can add as many sql queries as you want. Each sql query needs to be at separ
 ### Update database schema (run migration)	
 Before we run our first migation let's view query at our migration
 
-	_$ php nasgrate up:show
+	$ php nasgrate up:show
 	
 and it will display
 
@@ -280,7 +280,7 @@ If you look at your database you will see three tables.
 
 If you want to update database schema before certain migration you need to set this migration ID as an argument
 
-	_$ php nasgrate up:run 20150821132420
+	$ php nasgrate up:run 20150821132420
 
 ### Revert database schema
 
@@ -288,7 +288,7 @@ If something goes wrong and you want to rollback your changes you need to use re
 
 You can display all migration ID at your database by runinig
 
-	_$ php nasgrate list
+	$ php nasgrate list
 	
 and it will display
 
@@ -300,11 +300,11 @@ You see that you have four migrations at your database. Migration `2015082111275
 
 Let's imagine you want to revert `20150821112753_CreateFirstMigration` migration.
 
-	_$ php nasgrate down:show 20150821112753
+	$ php nasgrate down:show 20150821112753
 	
 or	
 
-	_$ php nasgrate down:show 20150821112753_CreateFirstMigration
+	$ php nasgrate down:show 20150821112753_CreateFirstMigration
 
 	
 and it will display
@@ -317,7 +317,7 @@ and it will display
 
 Lets run revert process
 
-	_$ php nasgrate down:run 20150821112753_CreateFirstMigration
+	$ php nasgrate down:run 20150821112753_CreateFirstMigration
 	
 and it will display
 
@@ -332,7 +332,7 @@ If you look at your database you can see that `test` and `test2` tables were rem
 
 Run again `list` command
 
-	_$ php nasgrate list
+	$ php nasgrate list
 	
 and it will display
 
@@ -346,7 +346,7 @@ Suppose you already have `test` and `test2` tables at your database and you want
 
 Run
 
-	_$ php nasgrate generate AddTwoDatabases table:test,test2
+	$ php nasgrate generate AddTwoDatabases table:test,test2
 	
 and it will display 
 
