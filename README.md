@@ -10,7 +10,7 @@ It supports mysql, mssql, postgresql, oracle and other databases (you can find i
 Requirements
 ------------
 
-Nasgrate is only supported by PHP 5.3.0 and up.
+Nasgrate is only supported by PHP 5.3.0 and up with PDO extension.
 
 Installation
 ------------
