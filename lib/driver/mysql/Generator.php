@@ -9,33 +9,6 @@ class Generator extends AbstractGenerator
     const
         DELIMITER = '~';
 
-    protected static $_instance = null;
-
-    /**
-     * @return Generator
-     */
-
-    public static function getInstance()
-    {
-        if (self::$_instance === null) {
-            self::$_instance = new self;
-        }
-        return self::$_instance;
-    }
-
-    public function getDiff()
-    {
-        $after = $this->_convertArray($this->_getFirstDataSource());
-        $before = $this->_convertArray($this->_getSecondDataSource());
-
-        $beforeKeyDiff = array_diff_key($before, $after);
-        $afterKeyDiff = array_diff_key($after, $before);
-
-        if ($beforeKeyDiff == $afterKeyDiff) return;
-
-        return $this->_generateSql($afterKeyDiff, $beforeKeyDiff);
-
-    }
 
     private function _getStructure($data)
     {

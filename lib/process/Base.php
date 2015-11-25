@@ -4,7 +4,6 @@ namespace Process;
 
 use Util\Db as Db;
 use Driver\Base\Migration as Migration;
-use Driver\Mysql\Helper as MysqlHelper;
 
 abstract class Base
 {
@@ -290,7 +289,7 @@ abstract class Base
         if (null === $this->_helper) {
             switch (DATABASE_DRIVER) {
                 case 'mysql':
-                    $this->_helper = new MysqlHelper();
+                    $this->_helper = new \Driver\Mysql\Helper();
                     break;
                 default:
                     throw new \Exception('Unrecognized driver ' . DATABASE_DRIVER);
