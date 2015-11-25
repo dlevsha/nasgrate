@@ -31,7 +31,7 @@ class Generator extends AbstractGenerator
     }
 
 
-    private function _generateSql($dataBefore, $dataAfter)
+    protected function _generateSql($dataBefore, $dataAfter)
     {
         $sql = array();
         $isFlipIteration = false;
@@ -40,7 +40,7 @@ class Generator extends AbstractGenerator
             foreach ($this->_getStructure($isFlipIteration ? $dataAfter : $dataBefore) as $tableName => $data) {
                 if (isset($data['table'])) {
                     // generate full table SQL
-                    $sql[] = $this->_getTableSql($data, $tableName);
+                    $sql[] = $this->_getTableSql($data, $tableName, $isFlipIteration);
                 } elseif (!$isFlipIteration) {
                     // generate alter column
                     if (isset($data['columns'])) {
@@ -93,7 +93,7 @@ class Generator extends AbstractGenerator
         return $sql;
     }
 
-    private function _convertArray(array $data)
+    protected function _convertArray(array $data)
     {
         $out = array();
         foreach ($data as $type => $items) {

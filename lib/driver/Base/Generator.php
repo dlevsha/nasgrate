@@ -8,6 +8,19 @@ abstract class Generator
         $_firstDataSource = null,
         $_secondDataSource = null;
 
+    public function getDiff()
+    {
+        $after = $this->_convertArray($this->_getFirstDataSource());
+        $before = $this->_convertArray($this->_getSecondDataSource());
+
+        $beforeKeyDiff = array_diff_key($before, $after);
+        $afterKeyDiff = array_diff_key($after, $before);
+
+        if ($beforeKeyDiff == $afterKeyDiff) return;
+
+        return $this->_generateSql($afterKeyDiff, $beforeKeyDiff);
+
+    }
 
     /**
      * @return null
