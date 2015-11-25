@@ -41,20 +41,20 @@ class Generator extends AbstractGenerator
                 if (isset($data['table'])) {
                     // generate full table SQL
                     $sql[] = $this->_getTableSql($data, $tableName, $isFlipIteration);
-                } elseif (!$isFlipIteration) {
+                } else {
                     // generate alter column
                     if (isset($data['columns'])) {
                         $previousColumnName = null;
                         foreach ($data['columns'] as $columnName => $col) {
                             if (isset($flipStructure[$tableName]['columns'][$columnName])) {
                                 $sql[] = array(
-                                    'up' => "ALTER TABLE `{$tableName}` CHANGE `{$columnName}` " . $this->_getColumnString($col),
-                                    'down' => "ALTER TABLE `{$tableName}` CHANGE `{$columnName}` " . $this->_getColumnString($flipStructure[$tableName]['columns'][$columnName])
+                                    $isFlipIteration ? 'down' : 'up' => "ALTER TABLE `{$tableName}` CHANGE `{$columnName}` " . $this->_getColumnString($col),
+                                    $isFlipIteration ? 'up' : 'down' => "ALTER TABLE `{$tableName}` CHANGE `{$columnName}` " . $this->_getColumnString($flipStructure[$tableName]['columns'][$columnName])
                                 );
                             } else {
                                 $sql[] = array(
-                                    'up' => "ALTER TABLE `{$tableName}` ADD " . $this->_getColumnString($col) . " AFTER `{$previousColumnName}`",
-                                    'down' => "ALTER TABLE `{$tableName}` DROP COLUMN `{$columnName}`"
+                                    $isFlipIteration ? 'down' : 'up' => "ALTER TABLE `{$tableName}` ADD " . $this->_getColumnString($col) . ($previousColumnName ? " AFTER `{$previousColumnName}`" : null),
+                                    $isFlipIteration ? 'up' : 'down' => "ALTER TABLE `{$tableName}` DROP COLUMN `{$columnName}`"
                                 );
                             }
                             $previousColumnName = $columnName;
@@ -66,8 +66,8 @@ class Generator extends AbstractGenerator
                             $indexString = $this->_getIndexString($indexData);
                             $firstIndexData = reset($indexData);
                             $sql[] = array(
-                                'up' => "ALTER TABLE `{$tableName}` ADD " . $indexString,
-                                'down' => "ALTER TABLE `{$tableName}` DROP " . ($firstIndexData['INDEX_NAME'] == 'PRIMARY' ? ' PRIMARY KEY' : ' KEY `' . $indexName . '`')
+                                $isFlipIteration ? 'down' : 'up' => "ALTER TABLE `{$tableName}` ADD " . $indexString,
+                                $isFlipIteration ? 'up' : 'down' => "ALTER TABLE `{$tableName}` DROP " . ($firstIndexData['INDEX_NAME'] == 'PRIMARY' ? ' PRIMARY KEY' : ' KEY `' . $indexName . '`')
                             );
 
 
@@ -79,8 +79,8 @@ class Generator extends AbstractGenerator
                             $indexString = $this->_getIndexString($indexData);
                             $firstIndexData = reset($indexData);
                             $sql[] = array(
-                                'up' => "ALTER TABLE `{$tableName}` ADD " . $indexString,
-                                'down' => "ALTER TABLE `{$tableName}` DROP `" . $constraintName . '`'
+                                $isFlipIteration ? 'down' : 'up' => "ALTER TABLE `{$tableName}` ADD " . $indexString,
+                                $isFlipIteration ? 'up' : 'down' => "ALTER TABLE `{$tableName}` DROP `" . $constraintName . '`'
                             );
 
 
