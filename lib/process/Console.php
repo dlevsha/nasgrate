@@ -6,6 +6,18 @@ use Util\Console as UtilConsole;
 
 class Console extends Base
 {
+    const
+        STATUS_GENERATE  = 'generate',
+        STATUS_STATUS    = 'status',
+        STATUS_UP_SHOW   = 'up:show',
+        STATUS_DOWN_SHOW = 'down:show',
+        STATUS_UP_RUN    = 'up',
+        STATUS_DOWN_RUN  = 'down',
+        STATUS_UNDO      = 'undo',
+        STATUS_REDO      = 'redo',
+        STATUS_LIST      = 'list',
+        STATUS_HELP      = 'help';
+
     protected static $_instance = null;
 
     private
@@ -13,7 +25,7 @@ class Console extends Base
         $_generator = null;
 
     /**
-     * @return Console
+     * @return Migration
      */
 
     public static function getInstance()
@@ -73,7 +85,7 @@ class Console extends Base
                     if ($commandContent) {
                         $refil = function (array $arr, $type) {
                             return implode("\n\n", array_map(function ($item) use ($type) {
-                                return trim($item[$type]) . ';';
+                                return isset($item[$type]) ? trim($item[$type]) . ';' : '';
                             }, $arr));
                         };
 

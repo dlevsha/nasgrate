@@ -2,7 +2,7 @@
 
 namespace Driver\Base;
 
-use Process\Console as MigrationConsole;
+use Process\Migration as MigrationConsole;
 
 class Migration
 {
@@ -208,5 +208,11 @@ class Migration
         return $this;
     }
 
+    public function getClearName()
+    {
+        $name = explode("_", $this->_migrationId);
+        array_shift($name);
+        return implode(" ", $name);
+    }
 
 }

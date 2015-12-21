@@ -2,7 +2,17 @@
 
 require_once 'config.php';
 
-$migration = Process\Console::getInstance();
+use Process\Console as Migration;
+
+$migration = Migration::getInstance();
+
+/*
+$_SERVER['argv'] = array(
+    1 => 'generate',
+    2 => 'Test',
+    3 => 'diff'
+);
+*/
 
 if (!isset($_SERVER['argv'][1])) {
     echo $migration->getHelp();
@@ -10,36 +20,34 @@ if (!isset($_SERVER['argv'][1])) {
 }
 
 switch ($_SERVER['argv'][1]) {
-    case "generate":
+    case Migration::STATUS_GENERATE:
         $migration->generate(isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : null, isset($_SERVER['argv'][3]) ? $_SERVER['argv'][3] : null);
         break;
-    case "status":
+    case Migration::STATUS_STATUS:
         $migration->status();
         break;
-    case "up:show":
+    case Migration::STATUS_UP_SHOW:
         $migration->upShow(isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : null);
         break;
-    case "down:show":
+    case Migration::STATUS_DOWN_SHOW:
         $migration->downShow(isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : null);
         break;
-    case "up":
-    case "up:run":
+    case Migration::STATUS_UP_RUN:
         $migration->up(isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : null);
         break;
-    case "down":
-    case "down:run":
+    case Migration::STATUS_DOWN_RUN:
         $migration->down(isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : null);
         break;
-    case "undo":
+    case Migration::STATUS_UNDO:
         $migration->undo(isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : null);
         break;
-    case "redo":
+    case Migration::STATUS_REDO:
         $migration->redo(isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : null);
         break;
-    case "list":
+    case Migration::STATUS_LIST:
         $migration->mlist();
         break;
-    case "help":
+    case Migration::STATUS_HELP:
         echo $migration->getHelp();
         break;
     default:

@@ -7,7 +7,6 @@ use Driver\Base\Migration as Migration;
 class Server extends Base
 {
     private
-        $_errors = array(),
         $_messages = array();
 
     protected static $_instance = null;
