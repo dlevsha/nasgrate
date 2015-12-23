@@ -72,7 +72,6 @@ class Generator extends AbstractGenerator
                             if (isset($flipStructure[$tableName]['columns'][$columnName])) {
                                 $sql[] = array(
                                     $isFlipIteration ? 'down' : 'up' => "ALTER TABLE `{$tableName}` CHANGE `{$columnName}` " . $this->_getColumnString($col),
-                                    $isFlipIteration ? 'up' : 'down' => "ALTER TABLE `{$tableName}` CHANGE `{$columnName}` " . $this->_getColumnString($flipStructure[$tableName]['columns'][$columnName])
                                 );
                             }elseif($renaimed){
                                 $sql[] = array(

@@ -7,6 +7,12 @@ What is Nasgrate?
 Nasgrate is a console utility that let you organise database schema migration process at a consistent and easy way.
 It supports mysql, mssql, postgresql, oracle and other databases (you can find informaton [here](http://php.net/manual/en/pdo.drivers.php) )
 
+The key features:
+
+- native SQL syntaxes for migrations
+- automatically generate migrations based on saved database states (you no need write migrations manualy, right now for MySQL database only, but I plan to add support for PostgreSQL, MS SQL and Oracle databases later). 
+- have handsome interface to view saved migrations
+
 Requirements
 ------------
 
@@ -14,19 +20,47 @@ Nasgrate is only supported by PHP 5.3.0 and up with PDO extension.
 
 Installation
 ------------
-	$ git clone https://github.com/dlevsha/nasgrate.git
-	$ cd nasgrate
+```bash
+$ git clone https://github.com/dlevsha/nasgrate.git
+$ cd nasgrate
+```
 	
-Open config.php file and change your database settings:
+Open `.environment` file and change your settings:
 
-	define('DATABASE_DRIVER', 'mysql');
-	define('DATABASE_HOST', 'localhost');
-	define('DATABASE_NAME', 'test');
-	define('DATABASE_USER', 'root');
-	define('DATABASE_PASSWORD', '');
+```ini
+[Primary connection params]
+; possible drivers: 'mysql' - MySQL database, 'sqlsrv' - MS SQL Server and SQL Azure databases
+; 'mssql' - FreeTDS, 'pgsql' - PostgreSQL, 'oci' - Oracle
+DATABASE_DRIVER = mysql
+DATABASE_HOST = localhost
+DATABASE_NAME = test
+DATABASE_USER = root
+DATABASE_PASSWORD =
+
+[Migration params]
+VERSION_TABLE_NAME = __migrationVersions
+FILE_EXTENSION = sql
+DIR_MIGRATION = DIR_ROOT/migrations
+DEFAULT_DESCRIPTION_MESSAGE = Created by CURRENT_USER, CURRENT_DATE
+
+[Database version control]
+DIR_DBSTATE = DIR_ROOT/dbstate
+; possible values - file / database
+VERSION_CONTROL_STRATEGY = file
+
+
+; --------------------------------------------------------------------
+; This params need only if you use second database as data source
+; to compare database structure. Please read documentation.
+[Secondary connection params]
+DATABASE_HOST_SECONDARY = localhost
+DATABASE_NAME_SECONDARY = test
+DATABASE_USER_SECONDARY = root
+DATABASE_PASSWORD_SECONDARY =
+```
+`[Primary connection params]` section describe connection settings
 	
-	
-`DATABASE_DRIVER`
+`DATABASE_DRIVER` - set one of drivers which supported by PHP PDO extension
 
 * mysql - MySQL database
 * sqlsrv - MS SQL Server and SQL Azure databases
@@ -41,6 +75,33 @@ You can find more information at official [PHP PDO documentation](http://php.net
 `DATABASE_NAME` - database name
 
 `DATABASE_USER` and `DATABASE_PASSWORD` - login and password to access your database
+
+Next section `[Migration params]` describe how script store information about migrations
+
+`VERSION_TABLE_NAME` - name of table, where migration script stores service information
+
+`FILE_EXTENSION` - migration file extension (by default `sql`)
+
+`DIR_MIGRATION`  - where script stores migration files. By default it stores it inside  `migrations` directory. 
+
+If you plan to share your migrations between team members or servers using version control system  (git for example) you need to move this directory to your project folder and change this path.
+
+For example if you have project in `/var/www/project/` and plan to store migrations in `/var/www/project/service/scripts/migrations` directory, you need to change `DIR_MIGRATION` to
+
+	DIR_MIGRATION = /var/www/project/service/scripts/migrations
+
+
+`DEFAULT_DESCRIPTION_MESSAGE` - each migration has its own description.
+
+By default message looks like `Created by CURRENT_USER, CURRENT_DATE`, where `CURRENT_USER` and `CURRENT_DATE` - predefined constant which changes to user name and current date respectively. So this message became `Created by dlevsha, 2015-12-21 17:53:41` in my case.
+
+Next section `[Database version control]` describe version control settings. The most powerful feature of this script is ability to track database changes and automatically create diff file which contain all database changes between migrations. 
+
+`VERSION_CONTROL_STRATEGY` - describe which strategy do you use to store database changes. There two possible values - `file` and `database`.
+
+If you have two databases (`prod` and `test` for example ) and you want to generate diff file which describe differences between databases your choice will be `database` and you need to feel next section `[Secondary connection params]` which describes  connection settings to reference database.
+
+Or you can set `file` value and script will automatically save database state each time when you create migration (in this case you do not need to feel `[Secondary connection params]` section).
 
 You can check your settings by simply running 
 
@@ -58,9 +119,9 @@ and you are to see the help page describing base commands
 	  status     - displays migration status
 	  generate   - creates new migration (migration file)
 	  up:show    - displays (but not executes) SQL-query, executed by migration update
-	  up:down    - displays (but not executes) SQL-query, executed by migration revert
-	  up:run     - executes migration update
-	  down:run   - executes migration revert
+	  down:show    - displays (but not executes) SQL-query, executed by migration revert
+	  up         - executes migration update
+	  down       - executes migration revert
 	  help       - shows this help page
 	  ...
 
@@ -113,18 +174,22 @@ Documentation
 
 ### Create migration
 
-Every time you create migration - you create `.php` file having at least two methods: `up()` and `down()`.
+Every time you create migration - you create `.sql` file having at least two sections: `-- UP --` and `-- DOWN --`.
 
-`up()` method contains SQL-queries that are used to update exist database schema. For example:
+`-- UP --` section contains SQL-queries that are used to update exist database schema. For example:
 
-	CREATE TABLE test (
-	  id int(11) unsigned NOT NULL AUTO_INCREMENT,
-	  PRIMARY KEY (id)
-	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```sql
+CREATE TABLE test (
+  id int(11) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```
 	
-`down()` method conatains SQL-queries that are used to revert database schema. For example:
+`-- DOWN --` method conatains SQL-queries that are used to revert database schema. For example:
 
-	DROP TABLE test
+```sql
+DROP TABLE test
+```	
 	
 Let's	create our first migration
 
@@ -133,140 +198,205 @@ Let's	create our first migration
 and it will display 
 	
 	Generate new migration ID: 20150821112753_CreateTestMigration
-	Please edit file: /migrations/20150821112753_CreateTestMigration.php
+	Please edit file: /migrations/20150821112753_CreateTestMigration.sql
 	
-By default migration file is stored at `/migrations` directory. You can change this location at `config.php` file at `DIR_MIGRATION` constant. 
+By default migration will be placed in `migrations` directory. You can change this location in `.environment` file at `DIR_MIGRATION` param. 
 
 If you look closely you'll see that migration ID is a timestamp:
 
 `20150821112753` -> `2015-08-21 11:27:53`
 
-You can change migration class prefix at `config.php` at `CLASS_PREFIX` constant.
+The created file looks like
 
-The created file contains three methods
+```sql
+-- Skip: no
+-- Name: Test
+-- Date: 01.12.2015 20:28:08
+-- Description: Created by dlevsha, 2015-12-01 20:28:08
 
-	<?php
-	// Please edit this file
-	class Migration20150821112753_CreateTestMigration extends Migration_Abstract
-	{
-	    public function up()
-	    {
-	        // please add UP SQL query here
-	        // $this->_addSql('');
-	    }
-	
-	    public function down()
-	    {
-	        // please add DOWN SQL query here
-	        // $this->_addSql('');
-	    }
-	
-	    public function getDescription()
-	    {
-	        return 'Created by dlevsha, 2015-08-21 11:27:53';
-	    }
-	}
-	
-`getDescription()` contains migration description. You can change or expand it. 
+-- UP --
 
-	    public function getDescription()
-	    {
-	        return "The first migration. Created by dlevsha, 2015-08-21 11:27:53";
-	    } 	
-	    
-Add sql to `up()` and `down()` methods.	 
+-- DOWN --
 
-   	<?php
-	// Please edit this file
-	class Migration20150821112753_CreateTestMigration extends Migration_Abstract
-	{
-	    public function up()
-	    {
-	        // please add UP SQL query here
-	        
-	        $this->_addSql('CREATE TABLE test (
-				  id int(11) unsigned NOT NULL AUTO_INCREMENT,
-				  PRIMARY KEY (id)
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8');
-	    }
-	
-	    public function down()
-	    {
-	        // please add DOWN SQL query here
-	        $this->_addSql('DROP TABLE test');
-	    }
-	
-	    public function getDescription()
-	    {
-	        return 'The first migration. Created by dlevsha, 2015-08-21 11:27:53';
-	    }
-	}
-	
-You can add as many sql queries as you want. Each sql query needs to be at separate `_addSql()` method. Each sql query at `up()` method needs to have mirrow sql query at `down()` method.	
+```	
 
-	    public function up()
-	    {
-	        // please add UP SQL query here
-	        
-	        $this->_addSql('CREATE TABLE test (
-				  id int(11) unsigned NOT NULL AUTO_INCREMENT,
-				  PRIMARY KEY (id)
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8');
-	        
-	        $this->_addSql('CREATE TABLE test2 (
-				  id int(11) unsigned NOT NULL AUTO_INCREMENT,
-				  PRIMARY KEY (id)
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8');
-	    }
-	
-	    public function down()
-	    {
-	        // please add DOWN SQL query here
-	        $this->_addSql('DROP TABLE test');
-	        $this->_addSql('DROP TABLE test2');
-	    }
+`Skip:` - if migration need to skip. Possible values `yes|no`. Default: `no`. Sometimes you need to skip certain migration for any reason. You can do this by setting `Skip:` to `yes`.
 
+`Name:` - your migration name
+
+`Date:` - creating date
+
+`Description:` - describe current migration
+
+`-- UP --` and `-- DOWN --` section contains SQL-expressions. You can add as many sql queries as you want. Each sql query needs to be at new line. Each sql query at `-- UP --` section needs to have mirrow sql query at `-- DOWN --` section.
+
+For example:
+
+```sql
+-- Skip: no
+-- Name: Test
+-- Date: 01.12.2015 20:28:08
+-- Description: The first migration. Created by dlevsha, 2015-12-01 20:28:08
+
+-- UP --
+CREATE TABLE test (
+  id int(11) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE test2 (
+  id int(11) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- DOWN --
+DROP TABLE test;
+DROP TABLE test2;
+
+```	
+
+### Create migration automatically (for MySQL database only)
+
+Each time than you create new migration, script save current database schema state in special file in `dbstate` directory. Than you change you database schema later, you can compare it with saved state and automatically create new migration with all database changes.
+
+Another option - if you have two databases (`prod` and `test` for example), you make changes in `test` database and want to create new migration which contain all changes, script can automatically do it. 
+ 
+You can use prefered database tools to modify database schema (for example Sequel Pro or phpMyAdmin) and no need to remember what you changed in database since last migration.
+
+By default script use `file` strategy to track changes in your database. If you want to compare changes in two databases using one of them as a standart - change `VERSION_CONTROL_STRATEGY` in `.environment` file to `database` and fill `[Secondary connection params]` section.
+
+Let me give you an example
+
+Suppose you add new table in you database using Sequel Pro: 
+
+![UI example](https://cloud.githubusercontent.com/assets/1639576/11975111/840f5d62-a97b-11e5-9a2a-8b3c6845df80.png)
+
+Run
+
+	$ php nasgrate generate AddNewTable diff
+
+and it will display (in my case)
+
+	Generate new migration ID: 20151223133618
+	Please edit file: /migrations/20151223133618_AddNewTable.sql
+	This migration marked as executed
 	
-### Update database schema (run migration)	
+When you look into `0151223133618_AddNewTable.sql` you will see that this file already has `-- UP --` and `-- DOWN --` methods with SQL-queries. 
+
+```sql
+-- Skip: no
+-- Name: AddNewTable
+-- Date: 23.12.2015 13:36:18
+-- Description: Created by dlevsha, 2015-12-23 13:36:18
+
+-- UP --
+
+CREATE TABLE `test` (
+    `id` int(11) unsigned NOT NULL  auto_increment,
+    `name` varchar(200)  DEFAULT NULL ,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+-- DOWN --
+
+DROP TABLE IF EXISTS `test`;
+```
+
+After you desided to change name field to VARCHAR(255) and add index for `name` field using program.
+
+![](https://cloud.githubusercontent.com/assets/1639576/11975178/22726562-a97c-11e5-9f5a-49e0e5a9fc13.png)
+
+Run
+
+	$ php nasgrate generate ChangeMyTestTable diff
+
+display 	
+
+	Generate new migration ID: 20151223135246
+	Please edit file: /migrations/20151223135246_ChangeMyTestTable.sql
+	This migration marked as executed	
+
+and create automatically
+
+```sql
+-- Skip: no
+-- Name: ChangeMyTestTable
+-- Date: 23.12.2015 13:52:46
+-- Description: Created by dlevsha, 2015-12-23 13:52:46
+
+-- UP --
+
+ALTER TABLE `test` CHANGE `name` `name` varchar(255)  DEFAULT NULL;
+
+ALTER TABLE `test` ADD KEY `name` (`name`);
+
+
+-- DOWN --
+
+ALTER TABLE `test` CHANGE `name` `name` varchar(200)  DEFAULT NULL;
+
+ALTER TABLE `test` DROP  KEY `name`;
+```	
+
+### View migrations list
+
 Before we run our first migation let's view query at our migration
 
 	$ php nasgrate up:show
 	
 and it will display
 
-	Migration :: 20150821112753_CreateTestMigration
-	Description: The first migration. Created by dlevsha, 2015-08-21 11:27:53
+```
+Migration :: 20150821112753_CreateTestMigration
+Description: The first migration. Created by dlevsha, 2015-12-01 20:28:08 
 	
-	CREATE TABLE test (
-	              id int(11) unsigned NOT NULL AUTO_INCREMENT,
-	              PRIMARY KEY (id)
-	            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+CREATE TABLE test (
+  id int(11) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
 	
-	CREATE TABLE test2 (
-	              id int(11) unsigned NOT NULL AUTO_INCREMENT,
-	              PRIMARY KEY (id)
-	            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+CREATE TABLE test2 (
+  id int(11) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+```
 
-We can see each query which will be executed during migration process. If all is ok let's run migration.
+We can see each query which will be executed during migration process. 
 
-	php nasgrate up:run
+Another option - you can view all transactions (executed and non-executed) via web interface. Just run command
+
+	php -S localhost:9000 
+	
+inside script directory and type in your browser `localhost:9000`. 
+
+You'll see your migrations
+
+![Migrations list](https://cloud.githubusercontent.com/assets/1639576/11954608/f41d92fc-a8ba-11e5-8019-76b07afc97d3.png)	
+	
+### Update database schema (run migration)	
+If all is ok let's run migration.
+
+	php nasgrate up
 	
 and it will display
 
-	Migration :: 20150821112753_CreateTestMigration
+```
+Migration :: 20150821112753_CreateTestMigration
 	
-	CREATE TABLE test (
-	              id int(11) unsigned NOT NULL AUTO_INCREMENT,
-	              PRIMARY KEY (id)
-	            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+CREATE TABLE test (
+  id int(11) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
 	
 	
-	CREATE TABLE test2 (
-	              id int(11) unsigned NOT NULL AUTO_INCREMENT,
-	              PRIMARY KEY (id)
-	            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+CREATE TABLE test2 (
+  id int(11) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
 	
-	... complete
+... complete
+```
 
 If you look at your database you will see three tables.
 
@@ -274,7 +404,7 @@ If you look at your database you will see three tables.
 	test
 	test2
 
-`__migrationVersions` - service table cretaed by migration script. It contains an executed migration ID. If you want to change the name of this table edit `VERSION_TABLE_NAME` constanted at `config.php`. Never remove this table - you will loose you migration information. 
+`__migrationVersions` - service table cretaed by migration script. It contains an executed migration ID. If you want to change the name of this table edit `VERSION_TABLE_NAME` constanted at `.environment`. Never remove this table - you will loose you migration information. 
 
 `test` and `test2` - tables created through migration process.
 
@@ -289,14 +419,14 @@ If something goes wrong and you want to rollback your changes you need to use re
 You can display all migration ID at your database by runinig
 
 	$ php nasgrate list
-	
-and it will display
+
+or using web-interface, described above	and it will display
 
 	Migration list:
 	 - [26.08.2015 19:39:39] 20150826193939_CreateFirstMigration - new
 	 - [26.08.2015 19:30:33] 20150826193033_New_Table_Test - executed
 	 
-You see that you have four migrations at your database. Migration `20150821112753` is already executed, three others are not.
+You see that you have two migrations at your database. Migration `20150821112753` is already executed, `20150826193939_CreateFirstMigration` are not.
 
 Let's imagine you want to revert `20150821112753_CreateFirstMigration` migration.
 
@@ -340,42 +470,6 @@ and it will display
 	 - [26.08.2015 19:39:39] 20150826193939_CreateFirstMigration - new
 	 - [26.08.2015 19:30:33] 20150826193033_New_Table_Test - new
 	 
-### Generated migration based on existed database schema (for MySQL database only)
-
-Suppose you already have `test` and `test2` tables at your database and you want to create migration based on these tables.
-
-Run
-
-	$ php nasgrate generate AddTwoDatabases table:test,test2
-	
-and it will display 
-
-	Generate new migration ID: 20150821141007_AddTwoDatabases
-	Please edit file: /migrations/Migration20150821141007_AddTwoDatabases.php
-	This migration marked as executed		
-	
-When you look into `Migration20150821141007_AddTwoDatabases.php` you will see that this file already has `up()` and `down()` methods with SQL-queries. 
-
-    public function up()
-    {
-        // please add UP SQL query here
-			$this->_addSql('CREATE TABLE test2 (
-			  id int(11) unsigned NOT NULL AUTO_INCREMENT,
-			  PRIMARY KEY (id)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8');
-			
-			$this->_addSql('CREATE TABLE test (
-			  id int(11) unsigned NOT NULL AUTO_INCREMENT,
-			  PRIMARY KEY (id)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8');
-    }
-
-    public function down()
-    {
-        // please add DOWN SQL query here
-			$this->_addSql('DROP TABLE IF EXISTS test2');
-			$this->_addSql('DROP TABLE IF EXISTS test');
-    }
 
 LICENSE
 -------

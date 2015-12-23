@@ -13,7 +13,6 @@ $requiredParams = array(
     'DATABASE_USER',
     'DATABASE_PASSWORD',
     'VERSION_TABLE_NAME',
-    'CLASS_PREFIX',
     'FILE_EXTENSION',
     'DIR_MIGRATION',
     'DIR_DBSTATE',
@@ -47,7 +46,6 @@ if (isset($params['DATABASE_HOST_SECONDARY'])) {
 
 define('VERSION_TABLE_NAME', $params['VERSION_TABLE_NAME']);
 
-define('CLASS_PREFIX', $params['CLASS_PREFIX']);
 define('FILE_EXTENSION', $params['FILE_EXTENSION']);
 
 define('DIR_MIGRATION', strpos($params['DIR_MIGRATION'], 'DIR_ROOT') === 0 ? DIR_ROOT . str_replace('DIR_ROOT', '', $params['DIR_MIGRATION']) : $params['DIR_MIGRATION']);

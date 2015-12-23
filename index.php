@@ -35,7 +35,7 @@ $migrations = Process\Server::getInstance()->getSql();
             <?php foreach ($migrations as $m) { ?>
                 <div class="sql-item migration<?php echo $m->getMigrationId(); ?>">
                     <a name="<?php echo $m->getMigrationId(); ?>"></a>
-                    <div class="row alert bg-<?php echo $m->getMigrationId() ? 'success' : 'warning'; ?>">
+                    <div class="row alert bg-<?php echo $m->isExecuted() ? 'success' : 'warning'; ?>">
                         <p class="lead"><b>Name:</b> <?php echo $m->getMigrationId(); ?></p>
                         <dl class="dl-horizontal">
                             <dt>Create date</dt>
