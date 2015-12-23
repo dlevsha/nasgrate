@@ -57,13 +57,13 @@ class Generator extends AbstractGenerator
                         foreach ($data['columns'] as $columnName => $col) {
                             $renaimed = null;
                             // is field was renaimed
-                            if(isset($flipStructure[$tableName]['columns'])){
+                            if (isset($flipStructure[$tableName]['columns'])) {
                                 $couid = $this->_getUid($col);
-                                foreach($flipStructure[$tableName]['columns'] as $columnNameFlip=>$colFlip){
-                                    if($couid == $this->_getUid($colFlip)){
+                                foreach ($flipStructure[$tableName]['columns'] as $columnNameFlip => $colFlip) {
+                                    if ($couid == $this->_getUid($colFlip)) {
                                         $renaimed = array(
                                             'to' => $col,
-                                            'from'   => $colFlip,
+                                            'from' => $colFlip,
                                         );
                                     }
                                 }
@@ -73,7 +73,7 @@ class Generator extends AbstractGenerator
                                 $sql[] = array(
                                     $isFlipIteration ? 'down' : 'up' => "ALTER TABLE `{$tableName}` CHANGE `{$columnName}` " . $this->_getColumnString($col),
                                 );
-                            }elseif($renaimed){
+                            } elseif ($renaimed) {
                                 $sql[] = array(
                                     $isFlipIteration ? 'down' : 'up' => "ALTER TABLE `{$tableName}` CHANGE `{$renaimed['from']['COLUMN_NAME']}` " . $this->_getColumnString($renaimed['to']),
                                 );
@@ -89,16 +89,18 @@ class Generator extends AbstractGenerator
                     }
 
                     // определяем есть ли у нас индексы, которые не нужно переделывать, так как они возникли в результате переименования
-                    if($renaimedRepository){
-                        $renaimedRepositoryKey = array_map(function($item){ return $item['to']['COLUMN_NAME']; }, $renaimedRepository);
+                    if ($renaimedRepository) {
+                        $renaimedRepositoryKey = array_map(function ($item) {
+                            return $item['to']['COLUMN_NAME'];
+                        }, $renaimedRepository);
                         $pktDiff = array();
-                        foreach($data['indexes'] as $name=>$item){
-                            if(!isset($flipStructure[$tableName]['indexes'][$name])) continue;
+                        foreach ($data['indexes'] as $name => $item) {
+                            if (!isset($flipStructure[$tableName]['indexes'][$name])) continue;
                             $indexColumns = explode(self::FIELD_DELIMITER, $item['COLUMN_NAME']);
                             $flipIndexColumns = explode(self::FIELD_DELIMITER, $flipStructure[$tableName]['indexes'][$name]['COLUMN_NAME']);
                             $colDiff = array_diff($indexColumns, $flipIndexColumns);
                             $pktDiff = array_diff($colDiff, $renaimedRepositoryKey);
-                            if(!$pktDiff) unset($data['indexes'][$name]);
+                            if (!$pktDiff) unset($data['indexes'][$name]);
                         }
                     }
 
@@ -137,15 +139,17 @@ class Generator extends AbstractGenerator
     {
         $out = array();
         $indexGrouped = array();
-        foreach($data['indexes'] as $item){
-            if($item['INDEX_NAME'] == 'PRIMARY') continue;
+        foreach ($data['indexes'] as $item) {
+            if ($item['INDEX_NAME'] == 'PRIMARY') continue;
             $indexGrouped[$item['INDEX_NAME']][] = $item['COLUMN_NAME'];
         }
 
-        $indexGrouped = array_filter($indexGrouped, function($item){ return count($item) > 1; });
+        $indexGrouped = array_filter($indexGrouped, function ($item) {
+            return count($item) > 1;
+        });
 
-        foreach($data['indexes'] as &$item){
-            if(isset($indexGrouped[$item['INDEX_NAME']])){
+        foreach ($data['indexes'] as &$item) {
+            if (isset($indexGrouped[$item['INDEX_NAME']])) {
                 $item['COLUMN_NAME'] = implode(self::FIELD_DELIMITER, $indexGrouped[$item['INDEX_NAME']]);
             }
         }
@@ -172,8 +176,8 @@ class Generator extends AbstractGenerator
     {
         return
             str_replace(
-                self::DELIMITER.$col['COLUMN_NAME'].self::DELIMITER,
-                self::DELIMITER.'$col$'.self::DELIMITER,
+                self::DELIMITER . $col['COLUMN_NAME'] . self::DELIMITER,
+                self::DELIMITER . '$col$' . self::DELIMITER,
                 implode(self::DELIMITER, array_values($col)));
     }
 
@@ -187,13 +191,13 @@ class Generator extends AbstractGenerator
     private function _getTableUid($tableData)
     {
 
-        foreach(array('TABLE_CATALOG', 'TABLE_SCHEMA', 'TABLE_TYPE', 'ENGINE', 'TABLE_COLLATION', 'TABLE_COMMENT') as $fieldKey){
+        foreach (array('TABLE_CATALOG', 'TABLE_SCHEMA', 'TABLE_TYPE', 'ENGINE', 'TABLE_COLLATION', 'TABLE_COMMENT') as $fieldKey) {
             $tableKey[$fieldKey] = $tableData['table'][$fieldKey];
         }
 
-        foreach(array('columns', 'indexes', 'constraints') as $tableSchemaPart){
-            if(isset($tableData[$tableSchemaPart])){
-                foreach($tableData[$tableSchemaPart] as $key=>&$objectParams){
+        foreach (array('columns', 'indexes', 'constraints') as $tableSchemaPart) {
+            if (isset($tableData[$tableSchemaPart])) {
+                foreach ($tableData[$tableSchemaPart] as $key => &$objectParams) {
                     $objectParams['TABLE_NAME'] = null;
                 }
             }
@@ -216,15 +220,15 @@ class Generator extends AbstractGenerator
     {
 
         // skip if tableName is version table name
-        if($tableName == VERSION_TABLE_NAME) return array();
+        if ($tableName == VERSION_TABLE_NAME) return array();
 
         // detect if table was only renaimed
         $tableKey = md5(serialize($this->_getTableUid($data)));
-        foreach($flipData as $flipTableName=>$flipTableData){
-            if(isset($flipTableData['table'])){
-                $flipTableKey =  md5(serialize($this->_getTableUid($flipTableData)));
+        foreach ($flipData as $flipTableName => $flipTableData) {
+            if (isset($flipTableData['table'])) {
+                $flipTableKey = md5(serialize($this->_getTableUid($flipTableData)));
 
-                if($tableKey == $flipTableKey){
+                if ($tableKey == $flipTableKey) {
                     $sql[$isFlip ? 'down' : 'up'] = "ALTER TABLE `{$flipTableName}` RENAME `{$tableName}`";
                     // $sql[$isFlip ? 'up' : 'down'] = "ALTER TABLE `{$tableName}` RENAME `{$flipTableName}`";
                     return $sql;

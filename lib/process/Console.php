@@ -7,16 +7,16 @@ use Util\Console as UtilConsole;
 class Console extends Base
 {
     const
-        STATUS_GENERATE  = 'generate',
-        STATUS_STATUS    = 'status',
-        STATUS_UP_SHOW   = 'up:show',
+        STATUS_GENERATE = 'generate',
+        STATUS_STATUS = 'status',
+        STATUS_UP_SHOW = 'up:show',
         STATUS_DOWN_SHOW = 'down:show',
-        STATUS_UP_RUN    = 'up',
-        STATUS_DOWN_RUN  = 'down',
-        STATUS_UNDO      = 'undo',
-        STATUS_REDO      = 'redo',
-        STATUS_LIST      = 'list',
-        STATUS_HELP      = 'help';
+        STATUS_UP_RUN = 'up',
+        STATUS_DOWN_RUN = 'down',
+        STATUS_UNDO = 'undo',
+        STATUS_REDO = 'redo',
+        STATUS_LIST = 'list',
+        STATUS_HELP = 'help';
 
     protected static $_instance = null;
 

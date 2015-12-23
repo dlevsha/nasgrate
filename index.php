@@ -8,7 +8,7 @@ $migrations = Process\Server::getInstance()->getSql();
 <head>
     <meta charset="utf-8">
     <title>Nasgrate - show SQL</title>
-    <link rel="stylesheet" href="/public/bootstrap.min.css" >
+    <link rel="stylesheet" href="/public/bootstrap.min.css">
     <link rel="stylesheet" href="/public/default.min.css">
     <script src="/public/highlight.min.js"></script>
     <script src="/public/jquery-1.11.3.min.js"></script>
@@ -23,11 +23,15 @@ $migrations = Process\Server::getInstance()->getSql();
     </div>
 
     <div class="row">
-        <div class="col-md-3" >
+        <div class="col-md-3">
             <div class="list-group">
-            <?php foreach ($migrations as $m) { ?>
-                <a href="javascript:void(0);" class="list-group-item <?php echo $m->isExecuted() ? 'executed' : ''; ?>" migrationId="<?php echo $m->getMigrationId(); ?>"><?php echo $m->getClearName(); ?><br /><small><?php echo $m->getDate(); ?></small></a>
-            <?php } ?>
+                <?php foreach ($migrations as $m) { ?>
+                    <a href="javascript:void(0);"
+                       class="list-group-item <?php echo $m->isExecuted() ? 'executed' : ''; ?>"
+                       migrationId="<?php echo $m->getMigrationId(); ?>"><?php echo $m->getClearName(); ?><br/>
+                        <small><?php echo $m->getDate(); ?></small>
+                    </a>
+                <?php } ?>
             </div>
             <button class="btn btn-default btn-lg show-all">Show all migration</button>
         </div>
@@ -35,6 +39,7 @@ $migrations = Process\Server::getInstance()->getSql();
             <?php foreach ($migrations as $m) { ?>
                 <div class="sql-item migration<?php echo $m->getMigrationId(); ?>">
                     <a name="<?php echo $m->getMigrationId(); ?>"></a>
+
                     <div class="row alert bg-<?php echo $m->isExecuted() ? 'success' : 'warning'; ?>">
                         <p class="lead"><b>Name:</b> <?php echo $m->getMigrationId(); ?></p>
                         <dl class="dl-horizontal">
@@ -71,7 +76,7 @@ $migrations = Process\Server::getInstance()->getSql();
         $('.list-group a').removeClass('active');
         $('.list-group a:first').addClass('active');
 
-        $('.list-group .list-group-item').click(function(){
+        $('.list-group .list-group-item').click(function () {
             $('.sql-item').hide();
             $('div.migration' + $(this).attr('migrationId')).show();
             $('.list-group .list-group-item').removeClass('active');
@@ -79,7 +84,7 @@ $migrations = Process\Server::getInstance()->getSql();
         });
 
 
-        $('.show-all').click(function(){
+        $('.show-all').click(function () {
             $('.col-md-3').remove();
             $('.col-md-9').removeClass('col-md-9').addClass('col-md-12');
             $('.sql-item').show();
