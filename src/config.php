@@ -1,6 +1,8 @@
 <?php
 
-define('DIR_ROOT', dirname(__FILE__));
+define('DIR_SRC', dirname(__FILE__));
+define('DIR_ROOT', substr(DIR_SRC, 0, strlen(DIR_SRC) - 4));
+
 define('ENVIRONMENT_FILE', DIR_ROOT . '/.environment');
 
 if (!file_exists(ENVIRONMENT_FILE)) die('File "' . ENVIRONMENT_FILE . '" not exist');
@@ -57,7 +59,7 @@ define('DEFAULT_DESCRIPTION_MESSAGE', str_replace(array('CURRENT_USER', 'CURRENT
 
 spl_autoload_register(function ($className) {
     $className = str_replace(array('\\'), array('/'), $className);
-    $path = DIR_ROOT . '/lib/' . $className . '.php';
+    $path = DIR_SRC . '/' . $className . '.php';
     // echo $path.'<br />'."\n";
     if (file_exists($path)) {
         require_once $path;

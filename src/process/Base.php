@@ -8,7 +8,7 @@ use Driver\Base\Migration as Migration;
 abstract class Base
 {
     const
-        TEMPLATE_PATH = 'lib/template.sql';
+        TEMPLATE_FILE = 'template.sql';
 
     protected
         $_helper = null,
@@ -281,7 +281,7 @@ abstract class Base
 
     protected function _getTemplatePath()
     {
-        return self::TEMPLATE_PATH;
+        return DIR_SRC.'/'.self::TEMPLATE_FILE;
     }
 
     private function _getHelper()

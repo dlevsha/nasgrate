@@ -1,3 +1,0 @@
-#!/usr/local/php5/bin/php -q
-<?php
-require_once 'console.php';

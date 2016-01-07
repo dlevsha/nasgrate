@@ -105,7 +105,7 @@ Or you can set `file` value and script will automatically save database state ea
 
 You can check your settings by simply running 
 
-	$ php nasgrate
+	$ php bin/nasgrate
 
 and you are to see the help page describing base commands
 
@@ -127,36 +127,17 @@ and you are to see the help page describing base commands
 
 If you use Linux or MacOS for your convenience you can setup nasgrate script
 
-Run 
-
-	$ which php
-	
-You'll see something like this
-
-	$ which php
-	/usr/local/php5/bin/php	
-
-Copy your php path and add it as a first line in `nasgrate` file like here
-
-	#!/usr/local/php5/bin/php -q
-	
-Your file will lool like this 
-
-	#!/usr/local/php5/bin/php -q
-	<?php
-	require_once 'console.php';
-	
 Go to console and run 
 
-	$ chmod +x nasgrate
+	$ chmod +x bin/nasgrate
 	
 Now you can run Nasgrate by simply typing
 
-	$ ./nasgrate	
+	$ ./bin/nasgrate	
 	
 Lets check your database connection settings
 
-	$ php nasgrate status
+	$ ./bin/nasgrate status
 	
 If all is ok you will see
 
@@ -193,7 +174,7 @@ DROP TABLE test
 	
 Let's	create our first migration
 
-	$ php nasgrate generate CreateTestMigration
+	$ ./bin/nasgrate generate CreateTestMigration
 	
 and it will display 
 	
@@ -273,7 +254,7 @@ Suppose you add a new table at your database using Sequel Pro:
 
 Run
 
-	$ php nasgrate generate AddNewTable diff
+	$ ./bin/nasgrate generate AddNewTable diff
 
 and it will display (in my case)
 
@@ -309,7 +290,7 @@ Suppose you decide to change `name` field to `VARCHAR(255)` and add index for `n
 
 Run
 
-	$ php nasgrate generate ChangeMyTestTable diff
+	$ ./bin/nasgrate generate ChangeMyTestTable diff
 
 display 	
 
@@ -343,7 +324,7 @@ ALTER TABLE `test` DROP  KEY `name`;
 
 Before we run our first migation let's view query at our migration
 
-	$ php nasgrate up:show
+	$ ./bin/nasgrate up:show
 	
 and it will display
 
@@ -377,7 +358,7 @@ You'll see your migrations
 ### Update database schema (run migration)	
 If all is ok let's run migration.
 
-	php nasgrate up
+	./bin/nasgrate up
 	
 and it will display
 
@@ -410,7 +391,7 @@ If you look at your database you will see three tables.
 
 If you want to update database schema before a certain migration you need to set this migration ID as an argument
 
-	$ php nasgrate up:run 20150821132420
+	$ ./bin/nasgrate up:run 20150821132420
 
 ### Revert database schema
 
@@ -418,7 +399,7 @@ If something goes wrong and you want to rollback your changes you need to use re
 
 You can display all migration IDs at your database by runing
 
-	$ php nasgrate list
+	$ ./bin/nasgrate list
 
 or using web-interface described above and it will display
 
@@ -430,11 +411,11 @@ You see that you have two migrations at your database. Migration `20150821112753
 
 Let's imagine you want to revert `20150821112753_CreateFirstMigration` migration.
 
-	$ php nasgrate down:show 20150821112753
+	$ ./bin/nasgrate down:show 20150821112753
 	
 or	
 
-	$ php nasgrate down:show 20150821112753_CreateFirstMigration
+	$ ./bin/nasgrate down:show 20150821112753_CreateFirstMigration
 
 	
 and it will display
@@ -447,7 +428,7 @@ and it will display
 
 Lets run revert process
 
-	$ php nasgrate down:run 20150821112753_CreateFirstMigration
+	$ ./bin/nasgrate down:run 20150821112753_CreateFirstMigration
 	
 and it will display
 
@@ -462,7 +443,7 @@ If you look at your database you can see that `test` and `test2` tables were rem
 
 Run again `list` command
 
-	$ php nasgrate list
+	$ ./bin/nasgrate list
 	
 and it will display
 

@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once dirname(__FILE__).'/../src/config.php';
 $migrations = Process\Server::getInstance()->getSql();
 ?>
 
@@ -89,10 +89,7 @@ $migrations = Process\Server::getInstance()->getSql();
             $('.col-md-9').removeClass('col-md-9').addClass('col-md-12');
             $('.sql-item').show();
         });
-
-
     </script>
-
 
 </div>
 
