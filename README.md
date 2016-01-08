@@ -30,7 +30,7 @@ $ cd nasgrate
 
 or use composer
 	
-    composer require dlevsha/nasgrate	
+    $ composer require dlevsha/nasgrate	
 	
 Open `.environment` file and change your settings:
 
