@@ -20,10 +20,17 @@ Nasgrate is only supported by PHP 5.3.0 and up with PDO extension.
 
 Installation
 ------------
+
+Clone project from GitHub
+
 ```bash
 $ git clone https://github.com/dlevsha/nasgrate.git
 $ cd nasgrate
 ```
+
+or use composer
+	
+    composer require dlevsha/nasgrate	
 	
 Open `.environment` file and change your settings:
 
