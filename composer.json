@@ -2,7 +2,7 @@
   "name": "dlevsha/nasgrate",
   "type": "project",
   "description": "Nasgrate is a console utility that let you organise database schema migration process at a consistent and easy way. It supports mysql, mssql, postgresql, oracle and other databases",
-  "keywords": ["database schemas","compare databases","database diff","database schema diff", "database migration", "database schema migration", "database schema migration tool"],
+  "keywords": ["database schemas","compare databases","database diff","database schema diff", "database migration", "database schema migration", "database schema migration tool", "database refactoring", "migrations", "database"],
   "homepage": "https://github.com/dlevsha/nasgrate",
   "license": "MIT",
   "authors": [
