@@ -51,5 +51,5 @@ switch ($_SERVER['argv'][1]) {
         echo $migration->getHelp();
         break;
     default:
-        Console::getInstance()->writeError('Command ' . $_SERVER['argv'][1] . ' not found');
+        \Util\Console::getInstance()->writeError('Command ' . $_SERVER['argv'][1] . ' not found');
 }

@@ -281,7 +281,7 @@ abstract class Base
 
     protected function _getTemplatePath()
     {
-        return DIR_SRC.'/'.self::TEMPLATE_FILE;
+        return DIR_ROOT.'/src/'.self::TEMPLATE_FILE;
     }
 
     private function _getHelper()

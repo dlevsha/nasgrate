@@ -1,0 +1,8 @@
+{
+  "chmod": "0755",
+  "directories": ["src","app"],
+  "files": ["README.md"],
+  "main": "bin/nasgrate",
+  "output": "nasgrate.phar",
+  "stub": true
+}
