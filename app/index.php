@@ -18,8 +18,8 @@ $migrations = Process\Server::getInstance()->getSql();
 
 <!-- Begin page content -->
 <div class="container">
-    <div class="page-header">
-        <h1>Nasgrate</h1>
+    <div class="page-header" style="margin-top: 12px;">
+        <img src="/public/nasgratelogo-small.png" alt="">
     </div>
 
     <div class="row">
