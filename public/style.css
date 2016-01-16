@@ -1,0 +1,57 @@
+.container {
+  width: 100%;
+  padding-left: 0px;
+  font-family: Helvetica, Sans-serif;
+  height: 92%;
+  margin: 2% 0;
+  position: fixed; }
+  .container .logo {
+    height: 10px; }
+  .container .col-md-3, .container .col-md-9 {
+    float: left;
+    height: 100%;
+    overflow: scroll; }
+  .container .list-group a {
+    border-left: 5px solid #D94341 !important; }
+    .container .list-group a.executed {
+      border-left: 5px solid #44A662 !important; }
+    .container .list-group a.active {
+      background-color: #fffffc;
+      border-color: #cfcfcf;
+      color: #555; }
+  .container .sql-item pre, .container .sql-item .hljs {
+    background-color: #fffffc;
+    border: 1px solid #fffffc; }
+  .container .sql-item .sql-head {
+    padding: 10px;
+    border: 1px solid #cfcfcf;
+    border-left: 30px solid #D94341 !important;
+    border-radius: 10px 0 0 10px;
+    background-color: #fffffc; }
+    .container .sql-item .sql-head.sql-head-success {
+      border-left: 30px solid #44A662 !important; }
+    .container .sql-item .sql-head .status-sign {
+      position: absolute;
+      margin: 10px 0 0 -35px;
+      color: white;
+      font-size: 150%; }
+  .container .sql-item .sql-body .row .col-md-6 {
+    background-color: #fffffc;
+    border: 1px solid #cfcfcf;
+    width: 46%;
+    margin: 1% 2%;
+    border-radius: 6px;
+    border-left: 3px solid #cfcfcf; }
+    .container .sql-item .sql-body .row .col-md-6 .code-block-sign {
+      position: absolute;
+      margin: 3px 0 0 -12px; }
+      .container .sql-item .sql-body .row .col-md-6 .code-block-sign.glyphicon-upload {
+        color: #44A662; }
+      .container .sql-item .sql-body .row .col-md-6 .code-block-sign.glyphicon-download {
+        color: #D94341; }
+  .container .sql-item .dl-horizontal dt {
+    width: 80px; }
+  .container .sql-item .dl-horizontal dd {
+    margin-left: 100px; }
+
+/*# sourceMappingURL=style.css.map */

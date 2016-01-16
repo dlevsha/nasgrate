@@ -9,6 +9,7 @@ $migrations = Process\Server::getInstance()->getSql();
     <meta charset="utf-8">
     <title>Nasgrate - show SQL</title>
     <link rel="stylesheet" href="/public/bootstrap.min.css">
+    <link rel="stylesheet" href="/public/style.css">
     <link rel="stylesheet" href="/public/default.min.css">
     <script src="/public/highlight.min.js"></script>
     <script src="/public/jquery-1.11.3.min.js"></script>
@@ -18,56 +19,57 @@ $migrations = Process\Server::getInstance()->getSql();
 
 <!-- Begin page content -->
 <div class="container">
-    <div class="page-header" style="margin-top: 12px;">
-        <img src="/public/nasgratelogo-small.png" alt="">
-    </div>
-
-    <div class="row">
         <div class="col-md-3">
             <div class="list-group">
                 <?php foreach ($migrations as $m) { ?>
                     <a href="javascript:void(0);"
                        class="list-group-item <?php echo $m->isExecuted() ? 'executed' : ''; ?>"
                        migrationId="<?php echo $m->getMigrationId(); ?>"><?php echo $m->getClearName(); ?><br/>
-                        <small><?php echo $m->getDate(); ?></small>
+                        <small><i class="glyphicon glyphicon-time"></i> <?php echo $m->getDate(); ?></small>
                     </a>
                 <?php } ?>
             </div>
-            <button class="btn btn-default btn-lg show-all">Show all migration</button>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 sql-block">
             <?php foreach ($migrations as $m) { ?>
                 <div class="sql-item migration<?php echo $m->getMigrationId(); ?>">
                     <a name="<?php echo $m->getMigrationId(); ?>"></a>
 
-                    <div class="row alert bg-<?php echo $m->isExecuted() ? 'success' : 'warning'; ?>">
-                        <p class="lead"><b>Name:</b> <?php echo $m->getMigrationId(); ?></p>
-                        <dl class="dl-horizontal">
-                            <dt>Create date</dt>
-                            <dd><?php echo $m->getDate(); ?></dd>
-                            <dt>Is skip</dt>
-                            <dd><?php echo $m->isSkip() ? 'yes' : 'no'; ?></dd>
-                            <dt>Is executed</dt>
-                            <dd><?php echo $m->isExecuted() ? 'yes' : 'no'; ?></dd>
-                            <dt>Description</dt>
-                            <dd><?php echo $m->getDescription(); ?></dd>
-                        </dl>
-                        <?php foreach ($m->getUpSql() as $k => $sql) { ?>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <pre><code class="sql"><?php echo $sql; ?></code></pre>
+                    <div class="row">
+                        <div class="sql-head sql-head-<?php echo $m->isExecuted() ? 'success' : 'warning'; ?>">
+                            <i class="status-sign glyphicon glyphicon-<?php echo $m->isExecuted() ? 'ok' : 'remove'; ?>-circle">&nbsp;</i>
+                            <p class="lead"><?php echo $m->getMigrationId(); ?></p>
+                            <dl class="dl-horizontal">
+                                <dt>Create date</dt>
+                                <dd><?php echo $m->getDate(); ?></dd>
+                                <dt>Is skip</dt>
+                                <dd><?php echo $m->isSkip() ? 'yes' : 'no'; ?></dd>
+                                <dt>Is executed</dt>
+                                <dd><?php echo $m->isExecuted() ? 'yes' : 'no'; ?></dd>
+                                <dt>Description</dt>
+                                <dd><?php echo $m->getDescription(); ?></dd>
+                            </dl>
+                        </div>
+                        <p>&nbsp;</p>
+                        <div class="sql-body">
+                            <?php foreach ($m->getUpSql() as $k => $sql) { ?>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <i class="code-block-sign glyphicon glyphicon-upload">&nbsp;</i>
+                                        <pre><code class="sql"><?php echo $sql; ?></code></pre>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <i class="code-block-sign glyphicon glyphicon-download">&nbsp;</i>
+                                        <pre><code class="sql"><?php echo $m->getDownSqlItem($k); ?></code></pre>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <pre><code class="sql"><?php echo $m->getDownSqlItem($k); ?></code></pre>
-                                </div>
-                            </div>
-                        <?php } ?>
+                            <?php } ?>
+                        </div>
                     </div>
                     <p>&nbsp;</p>
                 </div>
             <?php } ?>
         </div>
-    </div>
 
     <script>
         hljs.initHighlightingOnLoad();

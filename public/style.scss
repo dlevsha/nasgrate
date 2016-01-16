@@ -1,0 +1,104 @@
+$successColor: #D94341;
+$unSuccessColor: #44A662;
+$lightGreyColor: #fffffc;
+$greyColor: #cfcfcf;
+
+.container {
+  width: 100%;
+  padding-left: 0px;
+  font-family: Helvetica, Sans-serif;
+  height: 92%;
+  margin: 2% 0;
+  position: fixed;
+
+  .logo {
+    height: 10px;
+
+  }
+
+  .col-md-3, .col-md-9 {
+    float: left;
+    height: 100%;
+    overflow: scroll;
+  }
+
+  .list-group {
+
+    a {
+      border-left: 5px solid $successColor!important;
+
+      &.executed {
+        border-left: 5px solid $unSuccessColor!important;
+      }
+
+      &.active {
+        background-color: $lightGreyColor;
+        border-color: $greyColor;
+        color: #555;
+      }
+    }
+  }
+
+  .sql-item {
+    pre, .hljs {
+      background-color: $lightGreyColor;
+      border: 1px solid $lightGreyColor;
+    }
+
+    .sql-head {
+      padding: 10px;
+      border: 1px solid $greyColor;
+      border-left: 30px solid $successColor!important;
+      border-radius: 10px 0 0 10px;
+      background-color: $lightGreyColor;
+
+      &.sql-head-success {
+        border-left: 30px solid $unSuccessColor!important;
+      }
+
+      .status-sign {
+        position: absolute;
+        margin:  10px 0 0 -35px;
+        color: white;
+        font-size: 150%;
+      }
+
+    }
+
+    .sql-body {
+      .row {
+        .col-md-6 {
+          background-color: $lightGreyColor;
+          border: 1px solid $greyColor;
+          width: 46%;
+          margin: 1% 2%;
+          border-radius: 6px;
+          border-left: 3px solid $greyColor;
+
+          .code-block-sign {
+            position: absolute;
+            margin: 3px 0 0 -12px;
+
+            &.glyphicon-upload {
+              color: $unSuccessColor;
+            }
+
+            &.glyphicon-download {
+              color: $successColor;
+            }
+          }
+        }
+      }
+    }
+
+    .dl-horizontal {
+      dt {
+        width: 80px;
+      }
+
+      dd {
+        margin-left: 100px;
+      }
+    }
+  }
+}
