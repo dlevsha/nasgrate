@@ -360,7 +360,7 @@ inside script directory and type in your browser `localhost:9000`.
 
 You'll see your migrations
 
-![Migrations list](https://cloud.githubusercontent.com/assets/1639576/11954608/f41d92fc-a8ba-11e5-8019-76b07afc97d3.png)	
+![Migrations list](https://cloud.githubusercontent.com/assets/1639576/12373875/dbb39fc4-bc9a-11e5-9d54-202e7c221bb5.png)	
 	
 ### Update database schema (run migration)	
 If all is ok let's run migration.
