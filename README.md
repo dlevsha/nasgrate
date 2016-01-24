@@ -125,8 +125,9 @@ and you are to see the help page describing base commands
 	Command:
 	  status     - displays migration status
 	  generate   - creates new migration (migration file)
+	  diff       - save current database state and create migration with database schema diff
 	  up:show    - displays (but not executes) SQL-query, executed by migration update
-	  down:show    - displays (but not executes) SQL-query, executed by migration revert
+	  down:show  - displays (but not executes) SQL-query, executed by migration revert
 	  up         - executes migration update
 	  down       - executes migration revert
 	  help       - shows this help page
@@ -243,9 +244,15 @@ DROP TABLE test2;
 
 ```	
 
-### Create migration automatically (for MySQL database only)
+### Create migration (database schema diff) automatically 
 
-Each time you create new migration, the script saves current database schema state in a special file at `dbstate` directory. When you change you database schema later, you can compare it with saved state and automatically create new migration with all database changes.
+You can automaticaly create database schema diff, so you don't need describe changes in database.
+
+If you don't know what `database schema` is, read this StackOverflow answer: [what is purpose of database schema?](http://stackoverflow.com/questions/2674222/what-is-purpose-of-database-schema)
+
+Each time you create new migration, Nasgrate saves current `database schema state` in a special file at `dbstate` directory. This file contain snapshot of you database schema as a php serialized array (tables, rows name and type, indexes and etc.).
+
+When you change you database schema later, you can compare it with saved state and automatically create new migration with all database changes.
 
 Another option is if you have two databases (`prod` and `test` for example), you make changes in `test` database and want to create new migration which contains all changes, the script can automatically do it. 
  
@@ -261,7 +268,7 @@ Suppose you add a new table at your database using Sequel Pro:
 
 Run
 
-	$ ./bin/nasgrate generate AddNewTable diff
+	$ ./bin/nasgrate diff AddNewTable
 
 and it will display (in my case)
 

@@ -3,6 +3,6 @@
   "directories": ["src","app"],
   "files": ["README.md"],
   "main": "bin/nasgrate",
-  "output": "bin/nasgrate.phar",
+  "output": "nasgrate.phar",
   "stub": true
 }

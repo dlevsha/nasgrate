@@ -7,16 +7,17 @@ use Util\Console as UtilConsole;
 class Console extends Base
 {
     const
-        STATUS_GENERATE = 'generate',
-        STATUS_STATUS = 'status',
-        STATUS_UP_SHOW = 'up:show',
-        STATUS_DOWN_SHOW = 'down:show',
-        STATUS_UP_RUN = 'up',
-        STATUS_DOWN_RUN = 'down',
-        STATUS_UNDO = 'undo',
-        STATUS_REDO = 'redo',
-        STATUS_LIST = 'list',
-        STATUS_HELP = 'help';
+        STATUS_GENERATE   = 'generate',
+        STATUS_DIFF       = 'diff',
+        STATUS_STATUS     = 'status',
+        STATUS_UP_SHOW    = 'up:show',
+        STATUS_DOWN_SHOW  = 'down:show',
+        STATUS_UP_RUN     = 'up',
+        STATUS_DOWN_RUN   = 'down',
+        STATUS_UNDO       = 'undo',
+        STATUS_REDO       = 'redo',
+        STATUS_LIST       = 'list',
+        STATUS_HELP       = 'help';
 
     protected static $_instance = null;
 
@@ -50,12 +51,12 @@ class Console extends Base
     public function generate($migrationName = null, $commands = null)
     {
         if (!$migrationName) $this->_writeError("Migration name is required.\nUse: _$ php nasgrate generate [migration_name]");
-        if (preg_match('/[^A-z0-9-\.\_]/', $migrationName, $s)) $this->_writeError("Migration name contain wrong symbol: [" . $s[0] . ']');
+        if (preg_match('/[^A-z0-9-\.\_ ]/', $migrationName, $s)) $this->_writeError("Migration name contain wrong symbol: [" . $s[0] . ']');
         $time = date('YmdHis');
 
         $name = $time . '_' . implode("_", array_map(function ($item) {
                 return ucfirst($item);
-            }, preg_split('/[-\_\.]/', $migrationName)));
+            }, preg_split('/[-\_\. ]/', $migrationName)));
         $content = str_replace(
             array(
                 '{{ name }}',
@@ -185,11 +186,12 @@ Usage:
 
 Command:
   \033[33mstatus\033[0m     - displays migration status
-  \033[33mgenerate\033[0m   - creates new migration (migration file)
+  \033[33mgenerate\033[0m   - creates new empty migration (migration file)
+  \033[33mdiff\033[0m       - save current database state and create migration with database schema diff
   \033[33mup:show\033[0m    - displays (but not executes) SQL-query, executed by migration update
-  \033[33mup:down\033[0m    - display (but not execute) SQL-query, executed by migration revert
-  \033[33mup:run\033[0m     - executes migration update
-  \033[33mdown:run\033[0m   - executes migration revert
+  \033[33mdown:show\033[0m  - display (but not execute) SQL-query, executed by migration revert
+  \033[33mup\033[0m         - executes migration update
+  \033[33mdown\033[0m       - executes migration revert
   \033[33mhelp\033[0m       - shows this help page
 
 Examples:
@@ -199,10 +201,10 @@ Examples:
   \033[33mphp nasgrate down:show XXXXXXXXXXX\033[0m
   where XXXXXXXXXXX - id existed migration
 
-  \033[33mphp nasgrate up:run\033[0m
+  \033[33mphp nasgrate up\033[0m
   execute all non running migration step by step
 
-  \033[33mphp nasgrate down:run XXXXXXXXXXX\033[0m
+  \033[33mphp nasgrate down XXXXXXXXXXX\033[0m
   revert all changes before XXXXXXXXXXX
 
 ";
