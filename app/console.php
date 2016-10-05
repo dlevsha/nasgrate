@@ -22,7 +22,7 @@ if (!isset($_SERVER['argv'][1])) {
 switch ($_SERVER['argv'][1]) {
     case Migration::STATUS_GENERATE:
     case Migration::STATUS_DIFF:
-        $migration->generate(isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : null, $_SERVER['argv'][1] == Migration::STATUS_DIFF ? 'diff' : null );
+        $migration->generate(isset($_SERVER['argv'][2]) ? $_SERVER['argv'][2] : null, $_SERVER['argv'][3] == Migration::STATUS_DIFF ? 'diff' : null );
         break;
     case Migration::STATUS_STATUS:
         $migration->status();

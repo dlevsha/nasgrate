@@ -70,6 +70,7 @@ class Console extends Base
             ),
             file_get_contents($this->_getTemplatePath())
         );
+
         if ($commands) {
             foreach (explode('|', $commands) as $block) {
                 if (strpos($block, ':')) {
