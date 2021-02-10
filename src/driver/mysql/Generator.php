@@ -88,7 +88,7 @@ class Generator extends AbstractGenerator
                         }
                     }
 
-                    // определяем есть ли у нас индексы, которые не нужно переделывать, так как они возникли в результате переименования
+                    // determine if we have indexes that do not need to be redone, since they arose as a result of renaming
                     if ($renaimedRepository) {
                         $renaimedRepositoryKey = array_map(function ($item) {
                             return $item['to']['COLUMN_NAME'];
