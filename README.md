@@ -104,7 +104,7 @@ For example if you have project in `/var/www/project/` and plan to store migrati
 
 `DEFAULT_DESCRIPTION_MESSAGE` - each migration has its own description.
 
-By default a message looks like `Created by CURRENT_USER, CURRENT_DATE`, where `CURRENT_USER` and `CURRENT_DATE` - is a predefined constant which is changed to user name and current date respectively. So this message becomes `Created by dlevsha, 2015-12-21 17:53:41` in my case.
+By default a message looks like `Created by CURRENT_USER, CURRENT_DATE`, where `CURRENT_USER` and `CURRENT_DATE` - is a predefined constant which is changed to user name and current date respectively. So this message becomes `Created by dlevsha, 2020-12-21 17:53:41` in my case.
 
 Next section `[Database version control]` describes version control settings. The most powerful feature of this script is ability to track database changes and automatically create diff file which contains all database changes between migrations. 
 
@@ -190,22 +190,22 @@ Let's	create our first migration
 	
 and it will display 
 	
-	Generate new migration ID: 20150821112753_CreateTestMigration
-	Please edit file: /migrations/20150821112753_CreateTestMigration.sql
+	Generate new migration ID: 20200821112753_CreateTestMigration
+	Please edit file: /migrations/20200821112753_CreateTestMigration.sql
 	
 By default migration will be placed in `migrations` directory. You can change this location in `.environment` file at `DIR_MIGRATION` param. 
 
 If you look closely you'll see that migration ID is a timestamp:
 
-`20150821112753` -> `2015-08-21 11:27:53`
+`20200821112753` -> `2020-08-21 11:27:53`
 
 The created file looks like
 
 ```sql
 -- Skip: no
 -- Name: Test
--- Date: 01.12.2015 20:28:08
--- Description: Created by dlevsha, 2015-12-01 20:28:08
+-- Date: 01.12.2020 20:28:08
+-- Description: Created by dlevsha, 2020-12-01 20:28:08
 
 -- UP --
 
@@ -228,8 +228,8 @@ For example:
 ```sql
 -- Skip: no
 -- Name: Test
--- Date: 01.12.2015 20:28:08
--- Description: The first migration. Created by dlevsha, 2015-12-01 20:28:08
+-- Date: 01.12.2020 20:28:08
+-- Description: The first migration. Created by dlevsha, 2020-12-01 20:28:08
 
 -- UP --
 CREATE TABLE test (
@@ -276,17 +276,17 @@ Run
 
 and it will display (in my case)
 
-	Generate new migration ID: 20151223133618
-	Please edit file: /migrations/20151223133618_AddNewTable.sql
+	Generate new migration ID: 20201223133618
+	Please edit file: /migrations/20201223133618_AddNewTable.sql
 	This migration marked as executed
 	
-When you look at `20151223133618_AddNewTable.sql` you will see that this file already has `-- UP --` and `-- DOWN --` sections with SQL-queries. 
+When you look at `20201223133618_AddNewTable.sql` you will see that this file already has `-- UP --` and `-- DOWN --` sections with SQL-queries. 
 
 ```sql
 -- Skip: no
 -- Name: AddNewTable
--- Date: 23.12.2015 13:36:18
--- Description: Created by dlevsha, 2015-12-23 13:36:18
+-- Date: 23.12.2020 13:36:18
+-- Description: Created by dlevsha, 2020-12-23 13:36:18
 
 -- UP --
 
@@ -312,8 +312,8 @@ Run
 
 display 	
 
-	Generate new migration ID: 20151223135246
-	Please edit file: /migrations/20151223135246_ChangeMyTestTable.sql
+	Generate new migration ID: 20201223135246
+	Please edit file: /migrations/20201223135246_ChangeMyTestTable.sql
 	This migration marked as executed	
 
 and create automatically
@@ -321,8 +321,8 @@ and create automatically
 ```sql
 -- Skip: no
 -- Name: ChangeMyTestTable
--- Date: 23.12.2015 13:52:46
--- Description: Created by dlevsha, 2015-12-23 13:52:46
+-- Date: 23.12.2020 13:52:46
+-- Description: Created by dlevsha, 2020-12-23 13:52:46
 
 -- UP --
 
@@ -347,8 +347,8 @@ Before we run our first migation let's view query at our migration
 and it will display
 
 ```
-Migration :: 20150821112753_CreateTestMigration
-Description: The first migration. Created by dlevsha, 2015-12-01 20:28:08 
+Migration :: 20200821112753_CreateTestMigration
+Description: The first migration. Created by dlevsha, 2020-12-01 20:28:08 
 	
 CREATE TABLE test (
   id int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -381,7 +381,7 @@ If all is ok let's run migration.
 and it will display
 
 ```
-Migration :: 20150821112753_CreateTestMigration
+Migration :: 20200821112753_CreateTestMigration
 	
 CREATE TABLE test (
   id int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -409,7 +409,7 @@ If you look at your database you will see three tables.
 
 If you want to update database schema before a certain migration you need to set this migration ID as an argument
 
-	$ ./bin/nasgrate up:run 20150821132420
+	$ ./bin/nasgrate up:run 20200821132420
 
 ### Revert database schema
 
@@ -422,35 +422,35 @@ You can display all migration IDs at your database by runing
 or using web-interface described above and it will display
 
 	Migration list:
-	 - [26.08.2015 19:39:39] 20150826193939_CreateFirstMigration - new
-	 - [26.08.2015 19:30:33] 20150826193033_New_Table_Test - executed
+	 - [26.08.2020 19:39:39] 20200826193939_CreateFirstMigration - new
+	 - [26.08.2020 19:30:33] 20200826193033_New_Table_Test - executed
 	 
-You see that you have two migrations at your database. Migration `20150821112753` is already executed, `20150826193939_CreateFirstMigration` is not executed.
+You see that you have two migrations at your database. Migration `20200821112753` is already executed, `20200826193939_CreateFirstMigration` is not executed.
 
-Let's imagine you want to revert `20150821112753_CreateFirstMigration` migration.
+Let's imagine you want to revert `20200821112753_CreateFirstMigration` migration.
 
-	$ ./bin/nasgrate down:show 20150821112753
+	$ ./bin/nasgrate down:show 20200821112753
 	
 or	
 
-	$ ./bin/nasgrate down:show 20150821112753_CreateFirstMigration
+	$ ./bin/nasgrate down:show 20200821112753_CreateFirstMigration
 
 	
 and it will display
 
-	Migration :: 20150821112753_CreateFirstMigration
-	Description: The first migration. Created by dlevsha, 2015-08-21 11:27:53
+	Migration :: 20200821112753_CreateFirstMigration
+	Description: The first migration. Created by dlevsha, 2020-08-21 11:27:53
 	
 	DROP TABLE test
 	DROP TABLE test2	
 
 Lets run revert process
 
-	$ ./bin/nasgrate down:run 20150821112753_CreateFirstMigration
+	$ ./bin/nasgrate down:run 20200821112753_CreateFirstMigration
 	
 and it will display
 
-	Migration :: 20150821112753_CreateFirstMigration
+	Migration :: 20200821112753_CreateFirstMigration
 	
 	DROP TABLE test
 	DROP TABLE test2
@@ -466,8 +466,8 @@ Run again `list` command
 and it will display
 
 	Migration list:
-	 - [26.08.2015 19:39:39] 20150826193939_CreateFirstMigration - new
-	 - [26.08.2015 19:30:33] 20150826193033_New_Table_Test - new
+	 - [26.08.2020 19:39:39] 20200826193939_CreateFirstMigration - new
+	 - [26.08.2020 19:30:33] 20200826193033_New_Table_Test - new
 	 
 
 LICENSE
