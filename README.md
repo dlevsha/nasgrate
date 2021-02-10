@@ -43,6 +43,7 @@ DATABASE_HOST = localhost
 DATABASE_NAME = test
 DATABASE_USER = root
 DATABASE_PASSWORD =
+DATABASE_PORT =
 
 [Migration params]
 VERSION_TABLE_NAME = __migrationVersions
@@ -64,6 +65,7 @@ DATABASE_HOST_SECONDARY = localhost
 DATABASE_NAME_SECONDARY = test
 DATABASE_USER_SECONDARY = root
 DATABASE_PASSWORD_SECONDARY =
+DATABASE_PORT_SECONDARY =
 ```
 `[Primary connection params]` section describes connection settings
 	
@@ -82,6 +84,8 @@ You can find more information at official [PHP PDO documentation](http://php.net
 `DATABASE_NAME` - database name
 
 `DATABASE_USER` and `DATABASE_PASSWORD` - login and password to access your database
+
+`DATABASE_PORT` - the port number where the database server is listening (not required if using standard port)
 
 Next section `[Migration params]` describes how the script stores information about migrations
 

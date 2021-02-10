@@ -29,23 +29,25 @@ array_map(function ($name) use ($params) {
     }
 }, $requiredParams);
 
-define('DATABASE_DRIVER', $params['DATABASE_DRIVER']);
-define('DATABASE_HOST', $params['DATABASE_HOST']);
-define('DATABASE_NAME', $params['DATABASE_NAME']);
-define('DATABASE_USER', $params['DATABASE_USER']);
-define('DATABASE_PASSWORD', $params['DATABASE_PASSWORD']);
+define('DATABASE_DRIVER', trim($params['DATABASE_DRIVER']));
+define('DATABASE_HOST', trim($params['DATABASE_HOST']));
+define('DATABASE_NAME', trim($params['DATABASE_NAME']));
+define('DATABASE_USER', trim($params['DATABASE_USER']));
+define('DATABASE_PASSWORD', trim($params['DATABASE_PASSWORD']));
+define('DATABASE_PORT', trim($params['DATABASE_PORT']));
 
-define('DATABASE_DSN', DATABASE_DRIVER . ':host=' . DATABASE_HOST . ';dbname=' . DATABASE_NAME);
+define('DATABASE_DSN', DATABASE_DRIVER . ':host=' . DATABASE_HOST . (DATABASE_PORT ? ';port='.DATABASE_PORT: '') . ';dbname=' . DATABASE_NAME);
 
 define('VERSION_CONTROL_STRATEGY', isset($params['VERSION_CONTROL_STRATEGY']) ? $params['VERSION_CONTROL_STRATEGY'] : null);
 
 if (isset($params['DATABASE_HOST_SECONDARY'])) {
-    define('DATABASE_HOST_SECONDARY', $params['DATABASE_HOST_SECONDARY']);
-    define('DATABASE_NAME_SECONDARY', $params['DATABASE_NAME_SECONDARY']);
-    define('DATABASE_USER_SECONDARY', $params['DATABASE_USER_SECONDARY']);
-    define('DATABASE_PASSWORD_SECONDARY', $params['DATABASE_PASSWORD_SECONDARY']);
+    define('DATABASE_HOST_SECONDARY', trim($params['DATABASE_HOST_SECONDARY']));
+    define('DATABASE_NAME_SECONDARY', trim($params['DATABASE_NAME_SECONDARY']));
+    define('DATABASE_USER_SECONDARY', trim($params['DATABASE_USER_SECONDARY']));
+    define('DATABASE_PASSWORD_SECONDARY', trim($params['DATABASE_PASSWORD_SECONDARY']));
+    define('DATABASE_PORT_SECONDARY', trim($params['DATABASE_PORT_SECONDARY']));
 
-    define('DATABASE_DSN_SECONDARY', DATABASE_DRIVER . ':host=' . DATABASE_HOST_SECONDARY . ';dbname=' . DATABASE_NAME_SECONDARY);
+    define('DATABASE_DSN_SECONDARY', DATABASE_DRIVER . ':host=' . DATABASE_HOST_SECONDARY . (DATABASE_PORT_SECONDARY ? ';port='.DATABASE_PORT_SECONDARY : '') . ';dbname=' . DATABASE_NAME_SECONDARY);
 }
 
 define('VERSION_TABLE_NAME', $params['VERSION_TABLE_NAME']);
