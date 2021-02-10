@@ -367,7 +367,7 @@ Another option is you can view all transactions (executed and non-executed) via 
 
 	php -S localhost:9000 
 	
-inside script directory and type in your browser `localhost:9000`. 
+inside script directory and type in your browser `http://localhost:9000/app/`. 
 
 You'll see your migrations
 
