@@ -32,7 +32,7 @@ or use composer
 	
     $ composer require dlevsha/nasgrate	
 	
-Open `.environment` file and change your settings:
+Rename `.environment.example` to `.environment` and change your settings:
 
 ```ini
 [Primary connection params]
