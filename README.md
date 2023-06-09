@@ -18,6 +18,36 @@ Requirements
 
 Nasgrate is only supported by PHP 5.3.0 and up with PDO extension.
 
+Use Docker
+------------
+The easiest way to use Nasgrate is to use Docker.
+
+You can build your own container using Dockerfile or use Docker Hub image:
+
+```bash 
+docker run -it -v $(pwd)/data:/usr/src/nasgrate/data  \
+-e DATABASE_DRIVER=mysql  \
+-e DATABASE_HOST=host.docker.internal  \
+-e DATABASE_NAME=[database name]  \
+-e DATABASE_USER=[database user]  \
+-e DATABASE_PASSWORD=[database password]  \
+-e DATABASE_PORT=[database port]  \
+-e VERSION_TABLE_NAME=__migrationVersions  \
+-e DIR_MIGRATION=data/migrations  \
+-e DIR_DBSTATE=data/dbstate  \
+-e DEFAULT_DESCRIPTION_MESSAGE='Created by CURRENT_USER, CURRENT_DATE'  \
+-e CURRENT_USER=[your name] \
+dlevsha/nasgrate generate MyFirstMigration
+```
+
+You need to change variables for your own
+
+`$(pwd)/data` will contain your migration files and current database state
+
+You can also use `.env` file (please see `.env.example`). In this case you can use one line command
+
+```docker run -it -v $(pwd)/data:/usr/src/nasgrate/data --env-file=.env dlevsha/nasgrate generate MyFirstMigration```
+
 Installation
 ------------
 
@@ -32,40 +62,41 @@ or use composer
 	
     $ composer require dlevsha/nasgrate	
 	
-Rename `.environment.example` to `.environment` and change your settings:
+Rename `.env.example` to `.env` and change your settings:
 
 ```ini
-[Primary connection params]
-; possible drivers: 'mysql' - MySQL database, 'sqlsrv' - MS SQL Server and SQL Azure databases
-; 'mssql' - FreeTDS, 'pgsql' - PostgreSQL, 'oci' - Oracle
-DATABASE_DRIVER = mysql
-DATABASE_HOST = localhost
-DATABASE_NAME = test
-DATABASE_USER = root
-DATABASE_PASSWORD =
-DATABASE_PORT =
+# [Primary connection params]
+# possible drivers: 'mysql' - MySQL database, 'sqlsrv' - MS SQL Server and SQL Azure databases
+# 'mssql' - FreeTDS, 'pgsql' - PostgreSQL, 'oci' - Oracle
+DATABASE_DRIVER=mysql
+# you can use special variable 'host.docker.internal' for docker
+DATABASE_HOST=127.0.0.1
+DATABASE_NAME=testdb
+DATABASE_USER=testuser
+DATABASE_PASSWORD=testdbpass
+DATABASE_PORT=3306
 
-[Migration params]
-VERSION_TABLE_NAME = __migrationVersions
-FILE_EXTENSION = sql
-DIR_MIGRATION = DIR_ROOT/migrations
-DEFAULT_DESCRIPTION_MESSAGE = Created by CURRENT_USER, CURRENT_DATE
+# [Migration params]
+VERSION_TABLE_NAME=__migrationVersions
+FILE_EXTENSION=sql
+DIR_MIGRATION=DIR_ROOT/data/migrations
+DEFAULT_DESCRIPTION_MESSAGE=Created by CURRENT_USER, CURRENT_DATE
 
-[Database version control]
-DIR_DBSTATE = DIR_ROOT/dbstate
-; possible values - file / database
-VERSION_CONTROL_STRATEGY = file
+# [Database version control]
+DIR_DBSTATE=DIR_ROOT/data/dbstate
+# possible values - file / database
+VERSION_CONTROL_STRATEGY=file
 
 
-; --------------------------------------------------------------------
-; These params are needed only if you use second database as data source
-; to compare database structure. Please read documentation.
-[Secondary connection params]
-DATABASE_HOST_SECONDARY = localhost
-DATABASE_NAME_SECONDARY = test
-DATABASE_USER_SECONDARY = root
-DATABASE_PASSWORD_SECONDARY =
-DATABASE_PORT_SECONDARY =
+# --------------------------------------------------------------------
+# This params need only if you use second database as data source
+# to compare database structure. Please read documentation.
+#[Secondary connection params]
+DATABASE_HOST_SECONDARY=localhost
+DATABASE_NAME_SECONDARY=test
+DATABASE_USER_SECONDARY=root
+DATABASE_PASSWORD_SECONDARY=
+DATABASE_PORT_SECONDARY=
 ```
 `[Primary connection params]` section describes connection settings
 	

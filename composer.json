@@ -8,12 +8,10 @@
   "authors": [
     {
       "name": "Levsha Dmitry",
-      "email": "info@nasgrate.com",
-      "homepage": "http://nasgrate.com",
       "role": "Developer"
     }
   ],
   "require": {
-    "php": ">=5.4.0"
+    "php": ">=7.2.0"
   }
 }
