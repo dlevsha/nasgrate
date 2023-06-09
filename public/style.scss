@@ -25,10 +25,10 @@ $greyColor: #cfcfcf;
   .list-group {
 
     a {
-      border-left: 5px solid $successColor!important;
+      border-left: 5px solid $successColor !important;
 
       &.executed {
-        border-left: 5px solid $unSuccessColor!important;
+        border-left: 5px solid $unSuccessColor !important;
       }
 
       &.active {
@@ -48,17 +48,17 @@ $greyColor: #cfcfcf;
     .sql-head {
       padding: 10px;
       border: 1px solid $greyColor;
-      border-left: 30px solid $successColor!important;
+      border-left: 30px solid $successColor !important;
       border-radius: 10px 0 0 10px;
       background-color: $lightGreyColor;
 
       &.sql-head-success {
-        border-left: 30px solid $unSuccessColor!important;
+        border-left: 30px solid $unSuccessColor !important;
       }
 
       .status-sign {
         position: absolute;
-        margin:  10px 0 0 -35px;
+        margin: 10px 0 0 -35px;
         color: white;
         font-size: 150%;
       }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Driver\Base;
 
 abstract class Generator
