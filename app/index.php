@@ -19,6 +19,7 @@ $migrations = Process\Server::getInstance()->getSql();
 
 <!-- Begin page content -->
 <div class="container">
+    <?php if($migrations) {?>
     <div class="col-md-3">
         <div class="list-group">
             <?php foreach ($migrations as $m) { ?>
@@ -70,6 +71,12 @@ $migrations = Process\Server::getInstance()->getSql();
             </div>
         <?php } ?>
     </div>
+    <?php } else { ?>
+        <div class="col-md-12 text-center">
+            <h1>No available migrations found</h1>
+        </div>
+    <?php } ?>
+
 
     <script>
         hljs.initHighlightingOnLoad();

@@ -18,7 +18,7 @@ Requirements
 
 Nasgrate is only supported by PHP 5.3.0 and up with PDO extension.
 
-Use Docker
+Use Docker (preferred)
 ------------
 The easiest way to use Nasgrate is to use Docker.
 
@@ -98,6 +98,36 @@ $ docker run -it --rm -v $(pwd)/data:/usr/src/nasgrate/data \
 -e CURRENT_USER=[your name] \
 dlevsha/nasgrate generate MyFirstMigration
 ```
+
+Another option is you can view all transactions (executed and non-executed) via web interface. Just run command
+
+```bash 
+$ docker run -it --rm -v $(pwd)/data:/usr/src/nasgrate/data \ 
+-e DATABASE_DRIVER=mysql  \
+-e DATABASE_HOST=host.docker.internal  \
+-e DATABASE_NAME=[database name]  \
+-e DATABASE_USER=[database user]  \
+-e DATABASE_PASSWORD=[database password]  \
+-e DATABASE_PORT=[database port]  \
+-e VERSION_TABLE_NAME=__migrationVersions  \
+-e DIR_MIGRATION=data/migrations  \
+-e DIR_DBSTATE=data/dbstate  \
+-e DEFAULT_DESCRIPTION_MESSAGE='Created by CURRENT_USER, CURRENT_DATE'  \
+-e CURRENT_USER=[your name] \
+-p 9001:9000 \
+--entrypoint php \
+dlevsha/nasgrate -S localhost:9000  
+```
+or (if you use .env file)
+
+	docker run -it --rm -v $(pwd)/data:/usr/src/nasgrate/data --env-file=docker/nasgrate/.env -p 9001:9000 --entrypoint php dlevsha/nasgrate -S 0.0.0.0:9000 
+
+and type in your browser `http://localhost:9001/app/`.
+
+You'll see your migrations
+
+![Migrations list](https://cloud.githubusercontent.com/assets/1639576/12373875/dbb39fc4-bc9a-11e5-9d54-202e7c221bb5.png)
+
 
 Installation
 ------------
@@ -217,7 +247,6 @@ and you are to see the help page describing base commands
 	  up         - executes migration update
 	  down       - executes migration revert
 	  help       - shows this help page
-	  ...
 
 If you use Linux or MacOS for your convenience you can setup nasgrate script
 
@@ -264,11 +293,13 @@ CREATE TABLE test (
 
 ```sql
 DROP TABLE test
-```	
+```
 	
 Let's	create our first migration
 
-	$ ./bin/nasgrate generate CreateTestMigration
+```bash
+$ ./bin/nasgrate generate CreateTestMigration
+```
 	
 and it will display 
 	
@@ -292,8 +323,7 @@ The created file looks like
 -- UP --
 
 -- DOWN --
-
-```	
+```
 
 `Skip:` - if migration needs to be skiped. Possible values `yes|no`. Default: `no`. Sometimes you need to skip certain migration for any reason. You can do this by setting `Skip:` to `yes`.
 
@@ -327,8 +357,7 @@ CREATE TABLE test2 (
 -- DOWN --
 DROP TABLE test;
 DROP TABLE test2;
-
-```	
+```
 
 ### Create migration (database schema diff) automatically 
 
@@ -418,7 +447,7 @@ ALTER TABLE `test` ADD KEY `name` (`name`);
 ALTER TABLE `test` CHANGE `name` `name` varchar(200)  DEFAULT NULL;
 
 ALTER TABLE `test` DROP  KEY `name`;
-```	
+```
 
 ### View migrations list
 

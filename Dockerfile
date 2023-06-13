@@ -37,6 +37,8 @@ RUN pecl install oci8 \
 
 COPY . /usr/src/nasgrate
 
+EXPOSE 9000
+
 WORKDIR /usr/src/nasgrate
 
 ENTRYPOINT [ "php", "bin/nasgrate" ]
