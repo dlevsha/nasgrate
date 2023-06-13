@@ -18,15 +18,18 @@ if (($_ENV['DATABASE_DRIVER'] ?? null) && ($_ENV['DATABASE_DRIVER'] ?? null)) {
     foreach ($params as $paramName => $paramValue) {
         $params['DEFAULT_DESCRIPTION_MESSAGE'] = str_replace($paramName, $paramValue, $params['DEFAULT_DESCRIPTION_MESSAGE']);
     }
-    if (!($params['DIR_MIGRATION'] ?? null)) {
-        $params['DIR_MIGRATION'] = 'DIR_ROOT/data/migrations';
-    } else {
-        $params['DIR_MIGRATION'] = 'DIR_ROOT/' . $params['DIR_MIGRATION'];
-    }
-    if (!($params['DIR_DBSTATE'] ?? null)) {
-        $params['DIR_DBSTATE'] = 'DIR_ROOT/data/dbstate';
-    } else {
-        $params['DIR_DBSTATE'] = 'DIR_ROOT/' . $params['DIR_DBSTATE'];
+
+    foreach(['DIR_MIGRATION', 'DIR_DBSTATE'] as $directoryName){
+        if (!($params[$directoryName] ?? null)) {
+            $params[$directoryName] = DIR_ROOT . '/data/migrations';
+        } else {
+            $params[$directoryName] = DIR_ROOT . '/' . $params[$directoryName];
+        }
+        if(!file_exists($params[$directoryName])){
+            if (!mkdir($concurrentDirectory = $params[$directoryName]) && !is_dir($concurrentDirectory)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
+        }
     }
 } else {
     foreach (file(ENVIRONMENT_FILE) as $string) {
