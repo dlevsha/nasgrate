@@ -105,5 +105,5 @@ spl_autoload_register(function ($className) {
         require_once $path;
         return;
     }
-    throw new Exception('Class ' . $className . ' not found');
+    throw new \Exception('Class ' . $className . ' not found');
 });

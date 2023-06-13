@@ -108,7 +108,9 @@ abstract class Base
                     try {
                         $this->_write("\n\033[33m" . $sqlQuery . "\033[0m\n");
                         $this->_getDb()->exec($sqlQuery);
-                    } catch (Exception $e) {
+                    } catch (\PDOException $e) {
+                        $this->_writeError($sqlQuery . "\n\nDATABASE ERROR :: " . $e->getMessage());
+                    } catch (\Exception $e) {
                         $this->_writeError($sqlQuery . "\n\nDATABASE ERROR :: " . $e->getMessage());
                     }
                 }
