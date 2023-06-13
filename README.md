@@ -48,6 +48,55 @@ You can also use `.env` file (please see `.env.example`). In this case you can u
 
 ```docker run -it --rm -v $(pwd)/data:/usr/src/nasgrate/data --env-file=.env dlevsha/nasgrate generate MyFirstMigration```
 
+Please remember:
+
+- if you want to connect to your local database, use special docker variable `host.docker.internal` (for Mac and Windows user).
+- if you want to use `Nasgrate` with your existing docker network (for example created with docker-compose) you need to connect to container __inside__ your docker network. 
+To do this first run `docker network ls` command and find you network name. 
+
+```
+NETWORK ID     NAME             DRIVER    SCOPE
+27feae2bb848   bridge           bridge    local
+6ef8cb27a7fd   docker_default   bridge    local
+d2f3d581bf31   host             host      local
+318fd5030260   none             null      local
+```
+For example, I use `docker_default` network inside my application and you need to add `--net=docker_default` parameter to you command
+
+The second thing - you need to know your database container IP in order to connect to it.
+
+Please run `docker exec [your database container name] cat /etc/hosts`. 
+Usually the last line will show the IP address
+
+```
+127.0.0.1	localhost
+::1	localhost ip6-localhost ip6-loopback
+fe00::0	ip6-localnet
+ff00::0	ip6-mcastprefix
+ff02::1	ip6-allnodes
+ff02::2	ip6-allrouters
+172.25.0.3	980280f59bd3
+```
+
+In my case IP is `172.25.0.3` and my command will be 
+
+```bash 
+docker run -it --rm -v $(pwd)/data:/usr/src/nasgrate/data \ 
+--net=docker_default  \
+-e DATABASE_DRIVER=mysql  \
+-e DATABASE_HOST=172.25.0.3  \
+-e DATABASE_NAME=[database name]  \
+-e DATABASE_USER=[database user]  \
+-e DATABASE_PASSWORD=[database password]  \
+-e DATABASE_PORT=[database port]  \
+-e VERSION_TABLE_NAME=__migrationVersions  \
+-e DIR_MIGRATION=data/migrations  \
+-e DIR_DBSTATE=data/dbstate  \
+-e DEFAULT_DESCRIPTION_MESSAGE='Created by CURRENT_USER, CURRENT_DATE'  \
+-e CURRENT_USER=[your name] \
+dlevsha/nasgrate generate MyFirstMigration
+```
+
 Installation
 ------------
 
