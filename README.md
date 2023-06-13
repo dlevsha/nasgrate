@@ -25,7 +25,7 @@ The easiest way to use Nasgrate is to use Docker.
 You can build your own container using Dockerfile or use Docker Hub image:
 
 ```bash 
-docker run -it -v $(pwd)/data:/usr/src/nasgrate/data  \
+docker run -it --rm -v $(pwd)/data:/usr/src/nasgrate/data  \
 -e DATABASE_DRIVER=mysql  \
 -e DATABASE_HOST=host.docker.internal  \
 -e DATABASE_NAME=[database name]  \
@@ -46,7 +46,7 @@ You need to change variables for your own
 
 You can also use `.env` file (please see `.env.example`). In this case you can use one line command
 
-```docker run -it -v $(pwd)/data:/usr/src/nasgrate/data --env-file=.env dlevsha/nasgrate generate MyFirstMigration```
+```docker run -it --rm -v $(pwd)/data:/usr/src/nasgrate/data --env-file=.env dlevsha/nasgrate generate MyFirstMigration```
 
 Installation
 ------------
