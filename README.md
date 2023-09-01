@@ -99,6 +99,18 @@ $ docker run -it --rm -v $(pwd)/data:/usr/src/nasgrate/data \
 dlevsha/nasgrate generate MyFirstMigration
 ```
 
+You can run this line to obtain current ip 
+
+```bash
+docker exec [mysql container name] cat /etc/hosts | tail -n 1 | cut -d$'\t' -f 1
+```
+
+You can also run bin/migration.sh script (please change params inside it)
+
+```bash
+./migration.sh help
+```
+
 Another option is you can view all transactions (executed and non-executed) via web interface. Just run command
 
 ```bash 
